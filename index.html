@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Placement Prep — Anil's 6-Month Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07080f;--s1:#0e0f1a;--s2:#141525;--s3:#1c1d30;
+  --b1:rgba(255,255,255,0.06);--b2:rgba(255,255,255,0.11);
+  --text:#dddaf0;--muted:#6a6882;--hint:#3d3c52;
+  --ml:#7c6fcd;--ml2:#a99de8;--ml-bg:rgba(124,111,205,0.12);
+  --db:#4fc4a0;--db2:#7ddfc4;--db-bg:rgba(79,196,160,0.12);
+  --cs:#e8875a;--cs2:#f0aa80;--cs-bg:rgba(232,135,90,0.12);
+  --beh:#e05c8a;--beh2:#ea88aa;--beh-bg:rgba(224,92,138,0.12);
+  --dsa:#5aace8;--dsa2:#88c8f0;--dsa-bg:rgba(90,172,232,0.12);
+  --ok:#4fc47a;--warn:#e8c84f;--err:#e05c5c;
+  --r:8px;--r2:14px;
+  --fh:'Syne',sans-serif;--fb:'Outfit',sans-serif;--fm:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:14px;line-height:1.6;overflow-x:hidden;}
+
+/* grid bg */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(var(--b1) 1px,transparent 1px),linear-gradient(90deg,var(--b1) 1px,transparent 1px);
+  background-size:48px 48px;}
+
+/* glow */
+body::after{content:'';position:fixed;top:-20%;left:20%;width:60%;height:60%;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(124,111,205,0.07) 0%,transparent 70%);}
+
+.shell{position:relative;z-index:1;display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:220px;flex-shrink:0;position:sticky;top:0;height:100vh;
+  background:var(--s1);border-right:1px solid var(--b1);
+  display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:none;
+}
+.sidebar::-webkit-scrollbar{display:none;}
+.sb-head{padding:20px 18px 16px;border-bottom:1px solid var(--b1);}
+.sb-head .logo{font-family:var(--fh);font-size:14px;font-weight:800;color:var(--ml);}
+.sb-head .sub{font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:3px;}
+.sb-head .name{font-size:12px;color:var(--text);margin-top:10px;font-weight:500;}
+
+.sb-sec{padding:14px 18px 4px;font-family:var(--fm);font-size:9px;color:var(--hint);letter-spacing:.12em;text-transform:uppercase;}
+.sb-item{
+  display:flex;align-items:center;gap:9px;padding:8px 18px;cursor:pointer;
+  font-size:13px;color:var(--muted);transition:all .15s;
+  border-left:2px solid transparent;font-family:var(--fb);
+}
+.sb-item:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+.sb-item.active{color:var(--text);border-left-color:var(--ml);background:var(--ml-bg);}
+.sb-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
+.sb-ct{margin-left:auto;font-family:var(--fm);font-size:9px;background:var(--s3);padding:1px 6px;border-radius:20px;color:var(--muted);}
+
+.sb-progress{padding:16px 18px;border-top:1px solid var(--b1);margin-top:auto;}
+.sp-label{font-size:11px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;}
+.sp-bar{height:4px;background:var(--s3);border-radius:2px;overflow:hidden;}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(--ml),var(--db));border-radius:2px;transition:width .4s ease;}
+
+/* ── MAIN ── */
+.main{flex:1;padding:28px 32px;min-width:0;}
+
+/* ── VIEWS ── */
+.view{display:none;}
+.view.active{display:block;animation:fadeUp .25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PAGE HEADER ── */
+.ph{margin-bottom:24px;}
+.ph .tag{font-family:var(--fm);font-size:10px;color:var(--ml);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.ph h2{font-family:var(--fh);font-size:24px;font-weight:800;line-height:1.2;}
+.ph p{color:var(--muted);font-size:13px;margin-top:5px;max-width:520px;}
+
+/* ── CARDS ── */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r2);padding:18px 20px;}
+.card-sm{padding:14px 16px;}
+
+/* ── GRID HELPERS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-family:var(--fm);font-weight:500;}
+.b-ml{background:var(--ml-bg);color:var(--ml2);}
+.b-db{background:var(--db-bg);color:var(--db2);}
+.b-cs{background:var(--cs-bg);color:var(--cs2);}
+.b-beh{background:var(--beh-bg);color:var(--beh2);}
+.b-dsa{background:var(--dsa-bg);color:var(--dsa2);}
+.b-easy{background:rgba(79,196,122,.12);color:#7ddf9a;}
+.b-med{background:rgba(232,200,79,.12);color:#f0d46a;}
+.b-hard{background:rgba(224,92,92,.12);color:#f07a7a;}
+
+/* ── STAT CARDS ── */
+.stat-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:14px 16px;text-align:center;}
+.stat-v{font-family:var(--fh);font-size:26px;font-weight:800;line-height:1;}
+.stat-l{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* ── MONTH TABS ── */
+.month-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.mtab{
+  padding:6px 14px;border:1px solid var(--b2);border-radius:20px;
+  background:transparent;color:var(--muted);font-size:12px;cursor:pointer;
+  font-family:var(--fb);transition:all .15s;
+}
+.mtab:hover{color:var(--text);border-color:var(--b2);}
+.mtab.active{background:var(--ml-bg);border-color:var(--ml);color:var(--ml2);font-weight:500;}
+
+/* ── TOPIC CARD ── */
+.topic-card{
+  background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);
+  padding:14px 16px;margin-bottom:10px;
+}
+.tc-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.tc-title{font-weight:600;font-size:14px;font-family:var(--fh);}
+.tc-items{display:flex;flex-direction:column;gap:5px;}
+.tc-item{
+  display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);
+  padding:4px 0;border-bottom:1px solid var(--b1);cursor:pointer;
+}
+.tc-item:last-child{border-bottom:none;}
+.tc-item:hover{color:var(--text);}
+.tc-check{
+  width:14px;height:14px;border:1px solid var(--b2);border-radius:3px;
+  flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-size:9px;
+}
+.tc-item.done .tc-check{background:var(--ok);border-color:var(--ok);color:#000;}
+.tc-item.done .tc-text{color:var(--hint);text-decoration:line-through;}
+
+/* ── QUIZ ── */
+.quiz-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r2);padding:20px;}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.q-text{font-size:15px;font-weight:500;line-height:1.6;margin-bottom:16px;font-family:var(--fh);}
+.q-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.q-opt{
+  text-align:left;padding:10px 14px;border:1px solid var(--b2);
+  border-radius:var(--r);background:transparent;color:var(--text);
+  font-size:13px;cursor:pointer;line-height:1.5;font-family:var(--fb);
+  transition:all .15s;width:100%;
+}
+.q-opt:hover:not(:disabled){background:var(--s3);border-color:var(--b2);}
+.q-opt.correct{background:rgba(79,196,122,.12);border-color:var(--ok);color:#7ddf9a;}
+.q-opt.wrong{background:rgba(224,92,92,.12);border-color:var(--err);color:#f07a7a;}
+.q-opt.reveal{background:rgba(79,196,122,.07);border-color:rgba(79,196,122,.3);color:#7ddf9a;}
+.q-opt:disabled{cursor:default;}
+.q-exp{
+  font-size:12px;line-height:1.7;color:var(--muted);
+  background:var(--s2);padding:12px 14px;border-radius:var(--r);
+  border-left:3px solid var(--ml);margin-bottom:12px;
+}
+.q-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+/* ── BUTTONS ── */
+.btn{
+  padding:8px 16px;border:1px solid var(--b2);border-radius:var(--r);
+  background:transparent;color:var(--text);font-size:12px;cursor:pointer;
+  font-family:var(--fb);transition:all .15s;
+}
+.btn:hover{background:var(--s3);}
+.btn-primary{background:var(--ml-bg);border-color:var(--ml);color:var(--ml2);}
+.btn-primary:hover{background:rgba(124,111,205,.2);}
+
+/* ── PROGRESS BAR ── */
+.pbar{height:5px;background:var(--s3);border-radius:3px;overflow:hidden;margin:6px 0;}
+.pbar-fill{height:100%;border-radius:3px;transition:width .4s;}
+
+/* ── CHECKLIST ── */
+.check-item{
+  display:flex;align-items:flex-start;gap:10px;padding:9px 0;
+  border-bottom:1px solid var(--b1);cursor:pointer;
+}
+.check-item:last-child{border-bottom:none;}
+.ci-box{
+  width:16px;height:16px;border:1px solid var(--b2);border-radius:4px;
+  flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;
+  font-size:10px;transition:all .15s;
+}
+.check-item.done .ci-box{background:var(--ok);border-color:var(--ok);color:#000;}
+.check-item.done .ci-text{color:var(--hint);text-decoration:line-through;}
+.ci-text{font-size:13px;line-height:1.5;}
+.ci-badge{margin-left:auto;flex-shrink:0;}
+
+/* ── RESOURCE PILL ── */
+.res-pill{
+  display:inline-flex;align-items:center;gap:5px;padding:4px 10px;
+  border:1px solid var(--b2);border-radius:20px;font-size:11px;color:var(--muted);
+  font-family:var(--fm);margin:3px;
+}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:24px;}
+.timeline::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:1px;background:var(--b2);}
+.tl-item{position:relative;margin-bottom:18px;}
+.tl-dot{
+  position:absolute;left:-21px;top:4px;width:9px;height:9px;
+  border-radius:50%;border:2px solid var(--ml);background:var(--bg);
+}
+.tl-item.done .tl-dot{background:var(--ok);border-color:var(--ok);}
+.tl-week{font-family:var(--fm);font-size:10px;color:var(--ml);margin-bottom:3px;}
+.tl-content{font-size:13px;color:var(--text);}
+.tl-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* ── SCORE DISPLAY ── */
+.score-ring-wrap{display:flex;justify-content:center;margin:16px 0;}
+.score-ring{position:relative;width:90px;height:90px;}
+.score-ring svg{transform:rotate(-90deg);}
+.score-ring .val{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--fh);font-size:20px;font-weight:800;
+}
+
+/* ── QUIZ NAV ── */
+.quiz-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.qnav-btn{
+  width:32px;height:32px;border-radius:6px;border:1px solid var(--b2);
+  background:transparent;color:var(--muted);font-size:11px;cursor:pointer;
+  font-family:var(--fm);transition:all .15s;display:flex;align-items:center;justify-content:center;
+}
+.qnav-btn:hover{border-color:var(--b2);color:var(--text);}
+.qnav-btn.active{border-color:var(--ml);color:var(--ml2);background:var(--ml-bg);}
+.qnav-btn.correct{border-color:var(--ok);color:var(--ok);background:rgba(79,196,122,.1);}
+.qnav-btn.wrong{border-color:var(--err);color:var(--err);background:rgba(224,92,92,.1);}
+
+/* ── CAT FILTER ── */
+.cat-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.cat-btn{
+  display:flex;align-items:center;gap:6px;padding:5px 12px;
+  border:1px solid var(--b2);border-radius:20px;background:transparent;
+  color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--fb);transition:all .15s;
+}
+.cat-btn:hover{color:var(--text);}
+.cat-btn.on{font-weight:500;}
+.cdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:800px){
+  .sidebar{width:200px;}
+  .main{padding:20px 18px;}
+  .g4{grid-template-columns:1fr 1fr;}
+  .g3{grid-template-columns:1fr 1fr;}
+  .g2{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .sidebar{display:none;}
+  .main{padding:16px;}
+  .g3,.g4{grid-template-columns:1fr;}
+}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--b1);margin:20px 0;}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl th{padding:8px 10px;text-align:left;color:var(--muted);font-weight:500;border-bottom:1px solid var(--b1);font-family:var(--fm);font-size:10px;letter-spacing:.05em;text-transform:uppercase;}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--b1);color:var(--text);}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.02);}
+
+/* flash animation for correct */
+@keyframes flash{0%{opacity:1;}50%{opacity:.5;}100%{opacity:1;}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar" id="sidebar">
+  <div class="sb-head">
+    <div class="logo">PrepTrack</div>
+    <div class="sub">6-MONTH ROADMAP</div>
+    <div class="name">Anil · ML &amp; DB Engineer</div>
+  </div>
+
+  <div class="sb-sec">Overview</div>
+  <div class="sb-item active" onclick="nav('dashboard')">
+    <span class="sb-icon">⬡</span>Dashboard
+  </div>
+  <div class="sb-item" onclick="nav('roadmap')">
+    <span class="sb-icon">◈</span>6-Month Roadmap
+  </div>
+
+  <div class="sb-sec">Study Tracks</div>
+  <div class="sb-item" onclick="nav('ml')">
+    <span class="sb-icon" style="color:var(--ml)">◉</span>ML Engineer
+    <span class="sb-ct">8 topics</span>
+  </div>
+  <div class="sb-item" onclick="nav('db')">
+    <span class="sb-icon" style="color:var(--db)">◉</span>Database / Backend
+    <span class="sb-ct">7 topics</span>
+  </div>
+  <div class="sb-item" onclick="nav('cs')">
+    <span class="sb-icon" style="color:var(--cs)">◉</span>CS Fundamentals
+    <span class="sb-ct">6 topics</span>
+  </div>
+  <div class="sb-item" onclick="nav('dsa')">
+    <span class="sb-icon" style="color:var(--dsa)">◉</span>DSA &amp; Coding
+    <span class="sb-ct">5 topics</span>
+  </div>
+
+  <div class="sb-sec">Practice</div>
+  <div class="sb-item" onclick="nav('quiz')">
+    <span class="sb-icon">◈</span>Practice Quiz
+    <span class="sb-ct" id="sb-quiz-ct">40 Qs</span>
+  </div>
+  <div class="sb-item" onclick="nav('behavioural')">
+    <span class="sb-icon">◈</span>Behavioural
+    <span class="sb-ct">10 Qs</span>
+  </div>
+  <div class="sb-item" onclick="nav('sysdesign')">
+    <span class="sb-icon">◈</span>System Design
+  </div>
+
+  <div class="sb-progress">
+    <div class="sp-label">
+      <span>Overall progress</span>
+      <span id="sb-pct">0%</span>
+    </div>
+    <div class="sp-bar"><div class="sp-fill" id="sb-fill" style="width:0%"></div></div>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+<!-- ════════════════════════════════════════════
+     DASHBOARD
+════════════════════════════════════════════ -->
+<div class="view active" id="v-dashboard">
+  <div class="ph">
+    <div class="tag">overview</div>
+    <h2>Your Placement Prep Dashboard</h2>
+    <p>Track your 6-month journey to ML Engineer &amp; Database/Backend roles. Mark topics done as you go.</p>
+  </div>
+
+  <div class="g4" style="margin-bottom:20px;">
+    <div class="stat-card">
+      <div class="stat-v" id="d-done" style="color:var(--ok)">0</div>
+      <div class="stat-l">Topics Done</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-v" id="d-total">0</div>
+      <div class="stat-l">Total Topics</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-v" id="d-qscore" style="color:var(--ml)">0%</div>
+      <div class="stat-l">Quiz Score</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-v" id="d-streak" style="color:var(--warn)">0</div>
+      <div class="stat-l">Days Streak</div>
+    </div>
+  </div>
+
+  <!-- track progress bars -->
+  <div class="card" style="margin-bottom:14px;">
+    <div style="font-family:var(--fh);font-size:14px;font-weight:700;margin-bottom:16px;">Track Progress</div>
+    <div id="track-bars"></div>
+  </div>
+
+  <div class="g2">
+    <!-- this week -->
+    <div class="card">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:700;margin-bottom:14px;color:var(--ml2);">This Week's Focus</div>
+      <div id="this-week-content"></div>
+    </div>
+    <!-- quick stats -->
+    <div class="card">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:700;margin-bottom:14px;color:var(--db2);">Milestones</div>
+      <div id="milestones-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     ROADMAP
+════════════════════════════════════════════ -->
+<div class="view" id="v-roadmap">
+  <div class="ph">
+    <div class="tag">planning</div>
+    <h2>6-Month Roadmap</h2>
+    <p>A structured month-by-month plan across all tracks. Click a month to see detailed topics.</p>
+  </div>
+  <div class="month-tabs" id="roadmap-tabs"></div>
+  <div id="roadmap-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     ML TRACK
+════════════════════════════════════════════ -->
+<div class="view" id="v-ml">
+  <div class="ph">
+    <div class="tag" style="color:var(--ml)">ml engineer track</div>
+    <h2>Machine Learning</h2>
+    <p>From classical algorithms to deep learning, transformers, MLOps and GenAI. Check off topics as you master them.</p>
+  </div>
+  <div id="ml-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     DB TRACK
+════════════════════════════════════════════ -->
+<div class="view" id="v-db">
+  <div class="ph">
+    <div class="tag" style="color:var(--db)">database / backend track</div>
+    <h2>Database &amp; Backend Engineering</h2>
+    <p>SQL mastery, database design, backend concepts, cloud databases and data engineering pipelines.</p>
+  </div>
+  <div id="db-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     CS FUNDAMENTALS
+════════════════════════════════════════════ -->
+<div class="view" id="v-cs">
+  <div class="ph">
+    <div class="tag" style="color:var(--cs)">cs fundamentals</div>
+    <h2>CS Fundamentals</h2>
+    <p>Operating systems, computer networks, concurrency and systems programming — essential for product company interviews.</p>
+  </div>
+  <div id="cs-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     DSA
+════════════════════════════════════════════ -->
+<div class="view" id="v-dsa">
+  <div class="ph">
+    <div class="tag" style="color:var(--dsa)">coding rounds</div>
+    <h2>DSA &amp; Problem Solving</h2>
+    <p>Data structures, algorithms, complexity analysis and LeetCode patterns for technical coding rounds.</p>
+  </div>
+  <div id="dsa-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     QUIZ
+════════════════════════════════════════════ -->
+<div class="view" id="v-quiz">
+  <div class="ph">
+    <div class="tag">practice</div>
+    <h2>Interview Practice Quiz</h2>
+    <p>40 questions across ML, SQL, DSA, OS, Networks and System Design. Filter by category.</p>
+  </div>
+
+  <div class="g4" style="margin-bottom:20px;">
+    <div class="stat-card"><div class="stat-v" id="q-att">0</div><div class="stat-l">Attempted</div></div>
+    <div class="stat-card"><div class="stat-v" id="q-cor" style="color:var(--ok)">0</div><div class="stat-l">Correct</div></div>
+    <div class="stat-card"><div class="stat-v" id="q-wr" style="color:var(--err)">0</div><div class="stat-l">Wrong</div></div>
+    <div class="stat-card"><div class="stat-v" id="q-pct">0%</div><div class="stat-l">Score</div></div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+    <button class="btn btn-primary" onclick="shuffleQuiz()">⟳ Shuffle</button>
+    <button class="btn" onclick="resetQuiz()">↺ Reset</button>
+    <button class="btn" onclick="prevQ()">← Prev</button>
+    <button class="btn" onclick="nextQ()">Next →</button>
+  </div>
+
+  <div class="cat-bar" id="quiz-cat-bar"></div>
+
+  <div style="display:flex;gap:6px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+    <span style="font-size:11px;color:var(--muted);font-family:var(--fm);">Jump to:</span>
+    <div class="quiz-nav" id="quiz-nav-dots"></div>
+  </div>
+
+  <div id="quiz-container"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     BEHAVIOURAL
+════════════════════════════════════════════ -->
+<div class="view" id="v-behavioural">
+  <div class="ph">
+    <div class="tag" style="color:var(--beh)">soft skills</div>
+    <h2>Behavioural Interview Prep</h2>
+    <p>STAR-method practice for common HR and managerial questions.</p>
+  </div>
+  <div id="beh-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     SYSTEM DESIGN
+════════════════════════════════════════════ -->
+<div class="view" id="v-sysdesign">
+  <div class="ph">
+    <div class="tag">design rounds</div>
+    <h2>System Design Prep</h2>
+    <p>Framework, common patterns and 8 practice problems for ML and backend system design rounds.</p>
+  </div>
+  <div id="sd-content"></div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+
+const TRACKS = {
+  ml:{label:'ML Engineer',color:'var(--ml)',items:[]},
+  db:{label:'DB / Backend',color:'var(--db)',items:[]},
+  cs:{label:'CS Fundamentals',color:'var(--cs)',items:[]},
+  dsa:{label:'DSA & Coding',color:'var(--dsa)',items:[]}
+};
+
+const TOPICS = {
+  ml:[
+    {id:'ml1',title:'Mathematics for ML',badge:'b-ml',items:[
+      'Linear algebra: vectors, matrices, eigenvalues, SVD',
+      'Calculus: derivatives, chain rule, partial derivatives',
+      'Probability: Bayes theorem, distributions, MLE',
+      'Statistics: hypothesis testing, p-values, confidence intervals',
+      'Information theory: entropy, KL divergence'
+    ]},
+    {id:'ml2',title:'Classical ML Algorithms',badge:'b-ml',items:[
+      'Linear & logistic regression — cost functions, gradient descent',
+      'Decision trees, random forests, gradient boosting (XGBoost)',
+      'Support Vector Machines — margin, kernel trick',
+      'K-Nearest Neighbours & Naive Bayes',
+      'Clustering: K-Means, DBSCAN, hierarchical'
+    ]},
+    {id:'ml3',title:'Model Evaluation & Tuning',badge:'b-ml',items:[
+      'Bias-variance tradeoff — when to add complexity vs regularise',
+      'Confusion matrix, precision, recall, F1, AUC-ROC',
+      'Cross-validation: k-fold, stratified k-fold',
+      'Hyperparameter tuning: GridSearch, RandomSearch, Optuna',
+      'Class imbalance handling: SMOTE, class weights, threshold tuning'
+    ]},
+    {id:'ml4',title:'Deep Learning Foundations',badge:'b-ml',items:[
+      'Neural network: forward pass, backprop, activation functions',
+      'CNNs: convolution, pooling, stride, receptive field',
+      'RNNs & LSTMs: vanishing gradient, cell state, gating',
+      'Batch normalisation, dropout, weight initialisation',
+      'Loss functions: cross-entropy, MSE, focal loss'
+    ]},
+    {id:'ml5',title:'Transformers & Attention',badge:'b-ml',items:[
+      'Self-attention: Q, K, V — math + intuition',
+      'Multi-head attention & positional encoding',
+      'BERT, GPT architecture differences',
+      'Fine-tuning: full fine-tune vs LoRA / QLoRA / PEFT',
+      'RAG: chunking, embeddings, vector DB retrieval'
+    ]},
+    {id:'ml6',title:'Feature Engineering',badge:'b-ml',items:[
+      'Encoding: one-hot, label, target, ordinal encoding',
+      'Scaling: StandardScaler, MinMax, RobustScaler',
+      'Imputation: mean/median, KNN imputer, iterative',
+      'Feature selection: correlation, mutual info, RFE',
+      'Time-series features: lag, rolling window, Fourier'
+    ]},
+    {id:'ml7',title:'MLOps & Deployment',badge:'b-ml',items:[
+      'Model serving: FastAPI REST endpoints for inference',
+      'Docker: containerise model + dependencies',
+      'CI/CD: GitHub Actions for ML pipelines',
+      'Model monitoring: data drift, concept drift (Evidently)',
+      'Experiment tracking: MLflow, Weights & Biases'
+    ]},
+    {id:'ml8',title:'GenAI & LLM Engineering',badge:'b-ml',items:[
+      'LangChain / LangGraph: chains, agents, tools',
+      'Vector databases: FAISS, Pinecone, ChromaDB',
+      'Prompt engineering: few-shot, chain-of-thought, tool use',
+      'Evaluation: BLEU, ROUGE, RAGAS for RAG systems',
+      'Build & deploy: RAG chatbot on HuggingFace Spaces'
+    ]}
+  ],
+  db:[
+    {id:'db1',title:'SQL Core',badge:'b-db',items:[
+      'SELECT, WHERE, GROUP BY, HAVING, ORDER BY — in depth',
+      'All JOIN types: INNER, LEFT, RIGHT, FULL, CROSS, SELF',
+      'Aggregate functions: COUNT, SUM, AVG, MIN, MAX, DISTINCT',
+      'CASE WHEN, COALESCE, NULLIF, string & date functions',
+      'Subqueries: correlated, scalar, EXISTS / NOT EXISTS'
+    ]},
+    {id:'db2',title:'Advanced SQL',badge:'b-db',items:[
+      'Window functions: ROW_NUMBER, RANK, DENSE_RANK, NTILE',
+      'LAG, LEAD, FIRST_VALUE, LAST_VALUE, running totals',
+      'CTEs (WITH clause) — multi-step queries, recursive CTEs',
+      'Query optimisation: EXPLAIN, execution plans, index usage',
+      'Transactions: ACID, BEGIN/COMMIT/ROLLBACK, savepoints'
+    ]},
+    {id:'db3',title:'Database Design',badge:'b-db',items:[
+      'Normalisation: 1NF → 2NF → 3NF → BCNF',
+      'Primary keys, foreign keys, unique, check constraints',
+      'ERD design — entities, relationships, cardinality',
+      'Indexing: clustered vs non-clustered, composite, covering',
+      'Denormalisation trade-offs for read-heavy systems'
+    ]},
+    {id:'db4',title:'Database Internals',badge:'b-db',items:[
+      'B-Tree vs Hash indexes — when each is used',
+      'Isolation levels: READ UNCOMMITTED → SERIALIZABLE',
+      'Deadlocks: detection, prevention, lock ordering',
+      'WAL (Write-Ahead Logging) — crash recovery',
+      'MVCC (Multi-Version Concurrency Control) — PostgreSQL'
+    ]},
+    {id:'db5',title:'NoSQL & Distributed DBs',badge:'b-db',items:[
+      'NoSQL types: document (MongoDB), key-value (Redis), columnar (Cassandra)',
+      'CAP theorem: CP vs AP systems — examples',
+      'Eventual consistency, tunable consistency (Cassandra)',
+      'Sharding: horizontal partitioning, shard keys',
+      'Replication: master-slave, master-master, quorum reads/writes'
+    ]},
+    {id:'db6',title:'Cloud & Data Engineering',badge:'b-db',items:[
+      'Cloud databases: AWS RDS, Aurora, DynamoDB, BigQuery',
+      'Data warehousing: star schema, fact/dimension tables, OLAP vs OLTP',
+      'ETL vs ELT pipelines — Apache Airflow orchestration',
+      'Apache Spark: RDDs, DataFrames, transformations, actions',
+      'dbt: transformations in SQL, models, tests, documentation'
+    ]},
+    {id:'db7',title:'Backend API Concepts',badge:'b-db',items:[
+      'REST API design: resources, HTTP verbs, status codes',
+      'Authentication: JWT, OAuth2, API keys',
+      'Caching: Redis, cache-aside, write-through, TTL',
+      'Message queues: Kafka, RabbitMQ — when to use each',
+      'API rate limiting: token bucket, sliding window in Redis'
+    ]}
+  ],
+  cs:[
+    {id:'cs1',title:'Operating Systems',badge:'b-cs',items:[
+      'Processes vs threads: creation, memory model, context switch',
+      'CPU scheduling: FCFS, SJF, Round Robin, Priority, MLFQ',
+      'Memory management: paging, segmentation, page tables, TLB',
+      'Virtual memory: page faults, swapping, thrashing',
+      'Deadlocks: 4 conditions, prevention, avoidance (Banker\'s algo)'
+    ]},
+    {id:'cs2',title:'Concurrency & Synchronisation',badge:'b-cs',items:[
+      'Race conditions and critical sections',
+      'Mutex vs semaphore — ownership, counting, signalling',
+      'Monitors, condition variables — wait() and signal()',
+      'Producer-consumer, readers-writers, dining philosophers',
+      'Python GIL: why it exists and when to use multiprocessing'
+    ]},
+    {id:'cs3',title:'Computer Networks',badge:'b-cs',items:[
+      'OSI model: 7 layers — role of each, which protocols sit where',
+      'TCP vs UDP: connection, reliability, ordering, use cases',
+      'TCP 3-way handshake and 4-way teardown',
+      'DNS resolution: recursive resolver, root → TLD → authoritative',
+      'HTTP/1.1 vs HTTP/2 vs HTTP/3 — key improvements'
+    ]},
+    {id:'cs4',title:'Network Protocols',badge:'b-cs',items:[
+      'IP addressing: IPv4, subnetting, CIDR notation',
+      'HTTPS / TLS handshake — cipher suites, certificates',
+      'WebSockets vs HTTP long-polling vs SSE',
+      'CDN: how it works, cache invalidation, edge nodes',
+      'Load balancing: algorithms, health checks, sticky sessions'
+    ]},
+    {id:'cs5',title:'Storage & File Systems',badge:'b-cs',items:[
+      'File system structures: inodes, directory entries, blocks',
+      'HDD vs SSD vs NVMe — latency implications for design',
+      'RAID levels: 0, 1, 5, 10 — trade-offs',
+      'Object storage vs block storage vs file storage',
+      'Buffer cache, page cache — how OS accelerates disk I/O'
+    ]},
+    {id:'cs6',title:'Computer Architecture',badge:'b-cs',items:[
+      'CPU cache hierarchy: L1, L2, L3 — cache miss implications',
+      'CPU pipelining: stages, hazards, branch prediction',
+      'CISC vs RISC — x86 vs ARM',
+      'GPU architecture: SIMD, CUDA cores — why useful for ML',
+      'Memory hierarchy: registers → cache → RAM → disk — latency numbers'
+    ]}
+  ],
+  dsa:[
+    {id:'dsa1',title:'Time & Space Complexity',badge:'b-dsa',items:[
+      'Big O notation: O(1), O(log n), O(n), O(n log n), O(n²)',
+      'Best / average / worst case analysis',
+      'Space complexity vs auxiliary space',
+      'Amortised analysis: dynamic array doubling',
+      'Recurrence relations: master theorem basics'
+    ]},
+    {id:'dsa2',title:'Core Data Structures',badge:'b-dsa',items:[
+      'Arrays & strings: two pointers, sliding window',
+      'Linked lists: reversal, cycle detection (Floyd), merge',
+      'Stacks & queues: monotonic stack, deque patterns',
+      'Hash maps & sets: frequency counting, anagram problems',
+      'Trees: BST, balanced trees (AVL concept), heap (priority queue)'
+    ]},
+    {id:'dsa3',title:'Algorithms',badge:'b-dsa',items:[
+      'Sorting: merge sort, quick sort, counting sort — when to use each',
+      'Binary search: on sorted array, on answer space',
+      'Graph traversal: BFS (shortest path), DFS (cycle, topological)',
+      'Greedy: interval scheduling, Huffman, activity selection',
+      'Divide & conquer: merge sort, binary search, Karatsuba'
+    ]},
+    {id:'dsa4',title:'Dynamic Programming',badge:'b-dsa',items:[
+      'Memoisation vs tabulation approach',
+      'Classic 1D DP: Fibonacci, climbing stairs, coin change',
+      'Classic 2D DP: LCS, edit distance, 0/1 knapsack',
+      'DP on strings: palindrome, regex matching',
+      'DP on trees: diameter, max path sum'
+    ]},
+    {id:'dsa5',title:'LeetCode Patterns',badge:'b-dsa',items:[
+      'Two-pointer & sliding window (medium)×10 problems',
+      'Binary search variations ×8 problems',
+      'Graph BFS/DFS ×10 problems',
+      'Dynamic programming ×15 problems',
+      'System design coding: LRU cache, rate limiter, consistent hash'
+    ]}
+  ]
+};
+
+const ROADMAP_MONTHS = [
+  {num:1,title:'Foundations',phase:'Phase 1',color:'var(--ml)',
+   focus:['Python: OOP, generators, comprehensions, decorators','Linear algebra & probability for ML','SQL: SELECT, JOINs, GROUP BY, subqueries','Arrays, strings, hash maps — LeetCode easy×20','OS: processes, threads, virtual memory basics'],
+   milestone:'Solve 30 LeetCode problems. Write all SQL JOINs from memory.',
+   resources:['3Blue1Brown Linear Algebra','Mode SQL Tutorial','LeetCode (free)','OS Three Easy Pieces (free PDF)']},
+  {num:2,title:'Classical ML + SQL Advanced',phase:'Phase 1',color:'var(--ml)',
+   focus:['Classical ML: LR, trees, SVM, KNN, Naive Bayes','Evaluation: F1, AUC-ROC, cross-validation, tuning','SQL window functions: ROW_NUMBER, RANK, LAG, LEAD','CTEs, EXPLAIN, indexes, query optimisation','Networks: TCP/IP, DNS, HTTP/HTTPS, OSI model'],
+   milestone:'Implement logistic regression from scratch. Write 10 window function queries.',
+   resources:['Hands-On ML (Géron)','StrataScratch SQL','Coursera ML Spec Week 1-4','Computer Networks: Top-Down Approach']},
+  {num:3,title:'Deep Learning + DB Design',phase:'Phase 2',color:'var(--db)',
+   focus:['Neural nets: backprop, CNNs (InceptionV3), LSTMs','Transformers: self-attention, positional encoding','DB design: normalisation 1NF-3NF, ERD, indexing','DB internals: B-Trees, ACID, MVCC, WAL','Concurrency: mutex, semaphore, race conditions, deadlocks'],
+   milestone:'Refine your image captioning project. Design a 3NF e-commerce schema.',
+   resources:['fast.ai (free)','PyTorch docs','Use The Index Luke (SQL)','CMU DB course YouTube']},
+  {num:4,title:'MLOps + Data Engineering',phase:'Phase 2',color:'var(--db)',
+   focus:['MLOps: FastAPI deploy, Docker, GitHub Actions','Model monitoring: data drift, Evidently, MLflow','ETL pipelines: Airflow DAGs, Spark DataFrames','NoSQL: MongoDB, Redis, Cassandra — when to use','System design: scalability, load balancing, caching, CAP theorem'],
+   milestone:'Deploy captioning model as Docker + FastAPI. Build a simple Airflow DAG.',
+   resources:['Full Stack Deep Learning (free)','Docker docs','Designing ML Systems (Huyen)','ByteByteGo']},
+  {num:5,title:'GenAI + Projects + Advanced CS',phase:'Phase 3',color:'var(--cs)',
+   focus:['LLMs: fine-tuning (LoRA), RAG, LangChain, FAISS','Advanced graphs: Dijkstra, Bellman-Ford, Union-Find','Dynamic programming: 1D, 2D, DP on strings','CPU architecture, cache hierarchy, GPU for ML','Build 3 portfolio projects + GitHub READMEs'],
+   milestone:'Deploy a RAG chatbot. Build 3 polished GitHub projects. Solve 100+ LeetCode total.',
+   resources:['LangChain docs','Andrej Karpathy YouTube','NeetCode.io','FAISS (Meta AI)']},
+  {num:6,title:'Mock Interviews + Applications',phase:'Phase 3',color:'var(--beh)',
+   focus:['Mock interviews: Pramp, Interviewing.io ×5 sessions','DSA blitz: 5 problems/week, focus on DP + graphs','SQL hard-level: LeetCode Hard ×5/week','Behavioural: STAR method for all project stories','Resume: 1-page metrics-driven, LinkedIn optimise'],
+   milestone:'150+ LeetCode total. 5 mock interviews. 40+ job applications sent.',
+   resources:['Pramp (free mocks)','NeetCode.io','Naukri / LinkedIn','Levels.fyi salary data']}
+];
+
+const QUIZ_QUESTIONS = [
+  // ML
+  {cat:'ML',diff:'easy',q:'What is the bias-variance tradeoff?',opts:['High bias = overfitting; high variance = underfitting','High bias = underfitting; high variance = overfitting','Bias and variance always move in the same direction','Only bias affects model accuracy'],ans:1,exp:'Bias = error from overly simple assumptions (underfitting). Variance = sensitivity to training data noise (overfitting). You must balance both — reducing one often increases the other.'},
+  {cat:'ML',diff:'medium',q:'A model gets 99% accuracy when 99% of samples are class A. What is the problem?',opts:['Model is heavily overfitting','Class imbalance — model always predicts class A','Learning rate is too high','Validation set too small'],ans:1,exp:'This is a classic class imbalance trap. A dummy classifier predicting the majority always achieves 99%. Always check F1, precision, and recall on the minority class.'},
+  {cat:'ML',diff:'medium',q:'What does L1 regularisation do that L2 does not?',opts:['L1 prevents overfitting; L2 does not','L1 promotes sparsity — pushes some weights to exactly zero (feature selection)','L2 produces sparse weights','They are identical'],ans:1,exp:'L1 (Lasso) adds |w| penalty, which can zero out weights — acting as automatic feature selection. L2 (Ridge) adds w² penalty — shrinks weights but rarely zeros them. Use L1 when you suspect many features are irrelevant.'},
+  {cat:'ML',diff:'hard',q:'Why does dropout act as a regulariser?',opts:['It permanently removes neurons','It forces neurons to learn independently, preventing co-adaptation','It applies L2 penalty per layer','It scales the learning rate'],ans:1,exp:'Dropout randomly zeros neurons during training, preventing any neuron from relying on specific others (co-adaptation). This acts like training an ensemble of sub-networks, reducing overfitting.'},
+  {cat:'ML',diff:'hard',q:'How does LSTM solve the vanishing gradient problem?',opts:['It uses gradient clipping','The cell state provides an additive gradient highway; forget/input/output gates control information flow across many time steps','It uses batch normalisation','It replaces tanh with ReLU'],ans:1,exp:"In vanilla RNNs, gradients are multiplied by the same weights repeatedly through time — if < 1 they vanish. LSTM's cell state is an additive path with gating, allowing gradients to survive many steps without exponential decay."},
+  {cat:'ML',diff:'medium',q:'What is the difference between bagging and boosting?',opts:['Bagging is sequential; boosting is parallel','Bagging trains models in parallel on random subsets (reduces variance); boosting trains sequentially where each model corrects the previous errors (reduces bias)','Bagging only works for classification','Boosting uses random subsets like bagging'],ans:1,exp:'Bagging (e.g. Random Forest): parallel, independent models on bootstrap samples — reduces variance. Boosting (e.g. XGBoost): sequential, each model focuses on the mistakes of the previous — reduces bias. Boosting usually achieves higher accuracy but can overfit.'},
+  {cat:'ML',diff:'hard',q:'In a transformer, how is attention computed?',opts:['attention = softmax(QK) × V','attention = softmax(QKᵀ / √dₖ) × V','attention = sigmoid(QKᵀ) + V','attention = max(QK, V)'],ans:1,exp:'Query × Key^T produces similarity scores. Dividing by √dₖ prevents dot products from growing too large (stabilises softmax gradients). Softmax gives weights. These weights blend the Values — giving each position a weighted mix of all other positions.'},
+  {cat:'ML',diff:'medium',q:'When would you use precision over recall?',opts:['When false negatives are more costly than false positives','When false positives are more costly — e.g. spam detection (wrongly blocking legitimate email is costly)','Precision and recall are the same thing','Precision is always more important'],ans:1,exp:"Precision = TP/(TP+FP) — when you care about 'not crying wolf'. Recall = TP/(TP+FN) — when missing a positive is costly (e.g. cancer detection). Spam filters, fraud alerts that trigger manual review → prioritise precision. Medical diagnosis, safety systems → prioritise recall."},
+  // SQL
+  {cat:'SQL',diff:'easy',q:'What is the difference between WHERE and HAVING?',opts:['WHERE filters after grouping; HAVING filters rows before','WHERE filters individual rows before GROUP BY; HAVING filters groups after aggregation','They are identical','HAVING only works with window functions'],ans:1,exp:'WHERE runs before GROUP BY and filters individual rows. HAVING runs after GROUP BY and filters groups — typically using aggregate conditions like HAVING COUNT(*) > 5.'},
+  {cat:'SQL',diff:'easy',q:'What does a LEFT JOIN return when there is no match?',opts:['It excludes the row','Left row with NULLs in all right-table columns','Only the right table rows','It raises an error'],ans:1,exp:'LEFT JOIN returns ALL rows from the left table. For rows with no match on the right, right-table columns are filled with NULL. Useful for finding records with no related entries (e.g. customers with no orders).'},
+  {cat:'SQL',diff:'medium',q:'What does PARTITION BY do in a window function?',opts:['Physically splits the table','Defines groups for window function calculation without collapsing rows — unlike GROUP BY','Equivalent to GROUP BY','Filters rows before window function'],ans:1,exp:'PARTITION BY divides rows into groups for the window function but unlike GROUP BY, rows are NOT collapsed. E.g. SUM(salary) OVER (PARTITION BY dept) returns each employee\'s row plus their department total alongside.'},
+  {cat:'SQL',diff:'medium',q:'What is the difference between RANK() and DENSE_RANK()?',opts:['They are identical','RANK() leaves gaps after ties (1,2,2,4); DENSE_RANK() does not (1,2,2,3)','DENSE_RANK() leaves gaps','RANK() only works on integers'],ans:1,exp:'If two rows tie for rank 2: RANK() → 1,2,2,4 (gap after tie). DENSE_RANK() → 1,2,2,3 (no gap). Use DENSE_RANK() when you want exactly N distinct rank levels.'},
+  {cat:'SQL',diff:'hard',q:'What is an index and when should you NOT add one?',opts:['An index speeds up reads; always add them','An index speeds reads by avoiding full scans; avoid on frequently-updated columns, low-cardinality columns, or tiny tables','An index speeds writes','No trade-offs to adding indexes'],ans:1,exp:"Indexes speed up SELECT by creating sorted data structures. Cost: every INSERT/UPDATE/DELETE must update the index. Avoid on: columns updated very frequently, boolean/status columns (low cardinality), tiny tables (scan is faster). Run EXPLAIN to verify an index is being used."},
+  {cat:'SQL',diff:'hard',q:'What does EXPLAIN reveal about a query?',opts:['Documents a stored procedure','Shows the execution plan: which indexes are used, join order, estimated rows, and cost','Shows only column definitions','Prints timing only'],ans:1,exp:'EXPLAIN (EXPLAIN ANALYZE in PostgreSQL) shows the execution plan the optimiser chose: index scans vs sequential scans, join strategies, estimated vs actual row counts, and relative cost. Use it to diagnose slow queries.'},
+  {cat:'SQL',diff:'medium',q:'What is a CTE and why use it?',opts:['A temporary index','A named temporary result set (WITH clause) that improves readability and allows reuse within the same query','A permanent view','A subquery that only works in SELECT'],ans:1,exp:'CTEs (WITH cte AS (...)) define named result sets referenced later in the same query. Benefits: readable multi-step queries, reuse without repeating code, and recursive CTEs for hierarchical data (org trees, bill of materials).'},
+  // DSA
+  {cat:'DSA',diff:'easy',q:'What is the time complexity of binary search?',opts:['O(n)','O(log n)','O(n log n)','O(1)'],ans:1,exp:'Binary search halves the search space each step: n → n/2 → ... → 1, giving log₂(n) steps = O(log n). Prerequisite: the array must be sorted.'},
+  {cat:'DSA',diff:'easy',q:'Which data structure gives O(1) average lookup by key?',opts:['Array','Linked list','Hash map','Binary search tree'],ans:2,exp:'A hash map uses a hash function to map keys to buckets, giving O(1) average lookup, insert, delete. Worst case O(n) due to collisions, but a good hash function and load factor keep this rare.'},
+  {cat:'DSA',diff:'medium',q:'What is the time complexity of merge sort and why is it better than bubble sort?',opts:['O(n²) same as bubble sort','O(n log n) guaranteed in all cases; bubble sort degrades to O(n²)','O(n) for sorted input','O(log n)'],ans:1,exp:'Merge sort divides in half recursively (log n levels) and merges in O(n) per level → O(n log n) always. Bubble sort is O(n²) average/worst. Merge sort is stable and predictable, making it suitable for large datasets.'},
+  {cat:'DSA',diff:'medium',q:'BFS vs DFS — which finds shortest path in an unweighted graph?',opts:['DFS — goes deep fast','BFS — level-by-level exploration guarantees the first path found is shortest','They are equivalent','Neither — use Dijkstra for all graphs'],ans:1,exp:'BFS explores all nodes at distance 1 before distance 2. The first time it reaches the destination it has taken the minimum number of hops. DFS may find a longer path first. For weighted graphs, use Dijkstra.'},
+  {cat:'DSA',diff:'hard',q:'What is dynamic programming and how does it differ from plain recursion?',opts:['DP avoids recursion entirely','DP is recursion with memoisation or tabulation — stores subproblem results to avoid recomputation, reducing exponential to polynomial time','DP uses more memory with no time benefit','DP only applies to sorting'],ans:1,exp:'Plain recursion recomputes overlapping subproblems. DP stores each result once: top-down (memoisation) or bottom-up (tabulation). Classic: naive Fibonacci is O(2ⁿ); DP Fibonacci is O(n). Applies when problem has overlapping subproblems + optimal substructure.'},
+  {cat:'DSA',diff:'hard',q:'What is the difference between a tree and a graph?',opts:['Tree is undirected; graph is always directed','A tree is a connected acyclic graph with N nodes and N-1 edges with a root; a graph can have cycles, disconnected components, arbitrary edges','Trees have weighted edges only','No difference'],ans:1,exp:'A tree is a special graph: connected, acyclic, exactly N-1 edges, typically rooted. Graphs can have cycles, self-loops, disconnected components, directed or undirected edges. Tree traversal (inorder/preorder/postorder) are specific to trees; graphs need visited sets.'},
+  // OS
+  {cat:'OS',diff:'easy',q:'What is the difference between a process and a thread?',opts:['A process is a thread with more memory','A process is an independent program with its own address space; threads share the process memory space but have own stack','Threads have separate memory; processes share','A process is single-threaded by definition'],ans:1,exp:'A process has its own virtual address space, file handles, and resources. Threads within a process share memory but have their own stack and registers. Thread creation/switching is cheaper. Risk: threads can corrupt shared data (race conditions).'},
+  {cat:'OS',diff:'easy',q:'What is a deadlock?',opts:['CPU overheating','Two or more processes wait forever for resources held by each other','Process using 100% CPU','Memory exhaustion'],ans:1,exp:'Deadlock requires 4 conditions (Coffman): mutual exclusion, hold-and-wait, no preemption, circular wait. Example: Process A holds Lock 1, waits for Lock 2; Process B holds Lock 2, waits for Lock 1 — both wait forever. Prevention: always acquire locks in a consistent order.'},
+  {cat:'OS',diff:'medium',q:'What is virtual memory?',opts:['Extra RAM on the motherboard','An abstraction giving each process the illusion of a large contiguous address space, backed by physical RAM and disk (swap)','A CPU cache layer','Reserved OS memory only'],ans:1,exp:'Virtual memory decouples logical addresses (what the process sees) from physical addresses. Pages not in RAM are swapped to disk. Benefits: processes can exceed physical RAM, isolation between processes, copy-on-write sharing. Cost: page faults when accessing swapped pages.'},
+  {cat:'OS',diff:'medium',q:'What is the difference between a mutex and a semaphore?',opts:['They are identical','A mutex is a binary lock owned by one thread (only the locker can unlock); a semaphore is a counter signallable by any thread, allowing N concurrent accessors','Semaphores are binary; mutexes have any count','Mutexes for processes; semaphores for threads only'],ans:1,exp:'Mutex: binary, ownership-based — only the acquiring thread releases it. Used for critical sections. Semaphore: an integer counter. Binary semaphore ≈ mutex but no ownership. Counting semaphore allows N concurrent accesses (e.g. connection pool of 5). Semaphores can signal between threads.'},
+  {cat:'OS',diff:'hard',q:'What is thrashing?',opts:['Priority inversion bug','OS spends more time swapping pages than executing processes — near-zero useful work','Two threads competing for a mutex','Process allocating more memory than available'],ans:1,exp:'Thrashing: working sets of active processes exceed RAM. Every memory access causes a page fault → another page swapped out → another fault. System spends almost all time on I/O. Solutions: reduce degree of multiprogramming, add RAM, or use working-set model to suspend some processes.'},
+  // Networks
+  {cat:'Networks',diff:'easy',q:'What happens when you type a URL and press Enter?',opts:['Browser contacts server directly by IP','DNS resolves domain to IP → TCP 3-way handshake → TLS handshake (HTTPS) → HTTP request → server responds → browser renders','Browser checks local filesystem first','UDP packet sent directly to server'],ans:1,exp:'Key steps: DNS lookup (domain → IP), TCP handshake (SYN, SYN-ACK, ACK), TLS handshake (for HTTPS), HTTP GET, server responds (HTML/CSS/JS), browser parses and renders. Each step is a common interview topic.'},
+  {cat:'Networks',diff:'easy',q:'TCP vs UDP — which provides reliable ordered delivery?',opts:['UDP','TCP — connection-oriented, guarantees delivery, ordering, retransmission','They are equivalent','Both guarantee delivery'],ans:1,exp:'TCP: establishes connection (3-way handshake), guarantees delivery and order, retransmits lost packets, has flow/congestion control. Used for HTTP, databases, SSH. UDP: no connection, no delivery guarantee, lower overhead. Used for DNS, streaming, gaming, VoIP.'},
+  {cat:'Networks',diff:'medium',q:'What layer of the OSI model does HTTP operate at?',opts:['Layer 3 — Network','Layer 7 — Application; TCP at Layer 4; IP at Layer 3','Layer 4 — Transport','Layer 2 — Data Link'],ans:1,exp:'OSI 7 layers bottom-up: Physical → Data Link → Network (IP) → Transport (TCP/UDP) → Session → Presentation → Application (HTTP, DNS, FTP). HTTP/HTTPS = Layer 7. TCP/UDP = Layer 4. IP = Layer 3.'},
+  {cat:'Networks',diff:'medium',q:'What does DNS do and what is its resolution flow?',opts:['Encrypts traffic','Translates domain names to IP addresses; flow: browser cache → OS cache → recursive resolver → root → TLD → authoritative nameserver → IP returned','Transfers files','A database on every client'],ans:1,exp:'DNS is a distributed hierarchical database resolving names to IPs. Query flow: browser cache → OS cache → recursive resolver → root nameserver → TLD nameserver → authoritative nameserver → IP returned. TTL controls caching duration.'},
+  {cat:'Networks',diff:'hard',q:'What is the TCP 3-way handshake and why is it needed?',opts:['SYN → ACK → FIN; closes connections','SYN → SYN-ACK → ACK; establishes connection by synchronising sequence numbers before data flows','ACK → SYN → ACK','SYN → SYN → ACK; opens two channels'],ans:1,exp:'Step 1: Client SYN (my sequence starts at X). Step 2: Server SYN-ACK (acknowledged, my sequence starts at Y). Step 3: Client ACK. Both sides know each other\'s initial sequence numbers — connection established. Prevents stale packets from old connections being misinterpreted.'},
+  // System Design
+  {cat:'System Design',diff:'medium',q:'What is horizontal vs vertical scaling?',opts:['Vertical = more servers; horizontal = more CPU/RAM','Horizontal = adding more servers (scale out); vertical = adding more CPU/RAM to one server (scale up)','They are the same','Horizontal only for databases'],ans:1,exp:'Vertical (scale up): bigger machine. Simpler but has hardware ceiling and single point of failure. Horizontal (scale out): more machines with load balancer. No hard ceiling, fault-tolerant, but adds distributed complexity. Most web-scale systems scale horizontally.'},
+  {cat:'System Design',diff:'medium',q:'What is the CAP theorem?',opts:['Distributed system can guarantee all three: Consistency, Availability, Partition tolerance','In the presence of a network partition, a distributed system can be either Consistent OR Available — not both','CAP only applies to SQL databases','Consistency and Availability are always achievable together'],ans:1,exp:'CAP: during a network partition you choose CP (consistent but may reject requests — HBase, Zookeeper) or AP (available but may return stale data — Cassandra, DynamoDB). Partition tolerance is non-negotiable in real distributed networks.'},
+  {cat:'System Design',diff:'hard',q:'How would you design a rate limiter?',opts:['Block all requests after midnight','Track request count per user per time window in Redis with TTL; common algorithms: token bucket, leaky bucket, sliding window','Use a single DB table to count requests','Queue all requests and process sequentially'],ans:1,exp:'Token bucket: each user has N tokens replenished at rate R — allows bursts. Leaky bucket: fixed output rate — smooths bursts. Sliding window log: store timestamps in Redis sorted set, count within window. For distributed rate limiting use Redis INCR + EXPIRE atomically.'},
+  {cat:'System Design',diff:'medium',q:'What is eventual consistency and when is it acceptable?',opts:['Data is never consistent','All nodes will converge to the same state given no new updates; acceptable when stale reads are tolerable (social feeds, product view counts)','It means data loss is expected','Only for write-heavy workloads'],ans:1,exp:'Eventual consistency: replicas may diverge temporarily but converge eventually. Acceptable: social media likes, DNS, shopping cart recommendations. NOT acceptable: bank transfers, inventory deductions, authentication — these need strong consistency.'},
+  {cat:'System Design',diff:'hard',q:'What is a load balancer and what algorithms does it use?',opts:['A database that distributes queries','A component distributing requests across servers; algorithms: round-robin, least connections, IP hash, weighted round-robin','A caching layer','A DNS server'],ans:1,exp:'Load balancer routes traffic to prevent overload. Round-robin: sequential. Least connections: send to least busy. IP hash: consistent routing for same client. Weighted: by server capacity. Health checks detect down servers. Examples: Nginx, HAProxy, AWS ALB.'}
+];
+
+const BEH_QUESTIONS = [
+  {q:'Tell me about yourself.',star:'Structure: 1) Current background (ML projects, Flickr8k pipeline), 2) Key skills (PyTorch, SQL, deep learning), 3) What you\'re looking for (ML Engineer or DB role). Keep it to 90 seconds.',tip:'Lead with your strongest technical project. Mention the image captioning system — it\'s concrete and impressive.'},
+  {q:'Tell me about a challenging technical problem you solved.',star:'S: Describe the overfitting problem in your image captioning project. T: Fix overfitting while maintaining BLEU score. A: Applied dropout, L2 regularisation, early stopping, vocabulary pruning to 5000 words, LR scheduling. R: Model generalised better, BLEU improved.',tip:'Quantify the outcome if possible — e.g. "reduced validation loss by X%" or "BLEU score improved from A to B".'},
+  {q:'How do you handle disagreement with a teammate or manager?',star:'S: Describe a specific disagreement. T: Resolve it constructively. A: State your concern clearly with data, listen to their reasoning, propose an alternative. R: Reached a better decision together or committed after being overruled.',tip:'Interviewers want maturity — advocate clearly once, then commit fully if overruled. Show you can disagree AND collaborate.'},
+  {q:'Describe a time you had to learn something quickly.',star:'S: You need to implement a transformer-based architecture for the first time. T: Understand self-attention in 2 days. A: Read Attention Is All You Need, watched 3Blue1Brown, built a toy attention layer in PyTorch. R: Successfully implemented multi-head attention in your project.',tip:'Show learning process, not just outcome. Interviewers want to see HOW you learn, not just that you can.'},
+  {q:"Why do you want to be a ML Engineer / Data Engineer?",star:'Connect: 1) Specific work excites you (building systems that serve models at scale), 2) Your background qualifies you (deep learning project, SQL experience), 3) Company specifically (mention their tech stack or mission).',tip:'Never give the same answer to every company. Research what they actually build and connect your answer to it.'},
+  {q:'What is your greatest weakness?',star:'Pick a REAL weakness you are actively improving. Example: "I tend to over-engineer solutions. I\'ve been practising iterative development — shipping a simple version first and adding complexity only when needed." Avoid humble brags ("I work too hard").',tip:'Show self-awareness + active improvement. The worst answers are non-answers ("I work too hard") or genuine red flags with no mitigation.'},
+  {q:'Where do you see yourself in 5 years?',star:'Frame it around growing into the role: "In 2-3 years I want to be a strong ML Engineer deploying models at scale. In 5 years I\'d like to lead a small ML team or specialise in ML infrastructure." Align with the company\'s growth path.',tip:'Show ambition but also realistic progression. Avoid saying "I want to start my own company" unless it is that type of organisation.'},
+  {q:'Describe a project you are most proud of.',star:'S: Image captioning system on Flickr8k. T: Build end-to-end pipeline achieving meaningful BLEU scores. A: InceptionV3 feature extraction → LSTM decoder, fixed overfitting with regularisation, implemented proper BLEU evaluation stripping startseq/endseq. R: Working system with documented improvements.',tip:'Walk through architecture decisions. Show you understand WHY you made each choice, not just what you did.'},
+  {q:'How do you prioritise when you have multiple deadlines?',star:'A: List all tasks with effort + impact estimates, identify dependencies, communicate early if a deadline is at risk, focus on high-impact items first. Give a real example if possible.',tip:'Interviewers want to see proactive communication + systematic thinking. Avoid "I just work harder" as an answer.'},
+  {q:'Do you have any questions for us?',star:'Always ask: 1) "What does the ML/DB team\'s typical week look like?" 2) "What is the biggest technical challenge the team is working on right now?" 3) "How do you measure success for someone in this role in the first 6 months?"',tip:'Asking good questions shows genuine interest and evaluates whether the role is right for you. Never say "No, I think you\'ve covered everything."'}
+];
+
+const SD_PROBLEMS = [
+  {title:'Design a recommendation system',track:'ML',difficulty:'hard',framework:['Data: user-item interaction matrix, content metadata','Model: collaborative filtering (ALS), content-based, hybrid','Serving: pre-compute top-N for batch; real-time re-rank','Scale: Spark for training, Redis for serving, Kafka for event stream','Monitor: CTR, engagement, diversity, freshness']},
+  {title:'Design a fraud detection system',track:'ML',difficulty:'hard',framework:['Features: transaction amount, velocity, location, device fingerprint','Model: XGBoost + neural net ensemble; label with fraud team','Serving: < 50ms latency — feature store + pre-trained model','Feedback loop: human review → retraining pipeline','Monitoring: false positive rate, alert fatigue, drift']},
+  {title:'Design a URL shortener',track:'DB',difficulty:'medium',framework:['API: POST /shorten → short URL, GET /:code → redirect','Storage: hash(original URL) as key, store mapping in SQL/Redis','Collision handling: append counter or retry','Scale: read-heavy → cache in Redis, CDN edge redirect','Analytics: click count with Kafka + ClickHouse']},
+  {title:'Design a notification system',track:'DB',difficulty:'medium',framework:['Producers: payment service, social service, marketing → Kafka topics','Consumers: email worker, push worker, SMS worker','User preferences: DB table — channel + notification type toggle','Rate limiting: per user per hour in Redis','Delivery tracking: status table, retry with exponential backoff']},
+  {title:'Design a feature store for ML',track:'ML',difficulty:'hard',framework:['Online store: Redis for low-latency feature retrieval (< 5ms)','Offline store: Hive/S3 for training data with point-in-time correctness','Feature pipeline: Spark/Flink computes & writes to both stores','Registry: metadata, lineage, schema, versioning','Serving: ML model fetches online features at inference time']},
+  {title:'Design a distributed key-value store',track:'DB',difficulty:'hard',framework:['Partitioning: consistent hashing — virtual nodes for even distribution','Replication: 3 replicas per partition, quorum reads/writes (R+W > N)','Consistency: tunable — eventual vs strong via quorum','Failure handling: gossip protocol for node discovery, hinted handoff','Compaction: LSM tree (like Cassandra) for write-heavy workloads']},
+  {title:'Design a real-time ML pipeline',track:'ML',difficulty:'hard',framework:['Ingest: Kafka stream of events (clicks, transactions, sensor data)','Feature computation: Flink for stateful stream processing','Online learning: micro-batch updates to model (or full retrain triggers)','Serving: model server (TorchServe) behind load balancer','Monitoring: data quality checks, prediction distribution drift alerts']},
+  {title:'Design a database for e-commerce',track:'DB',difficulty:'medium',framework:['Core tables: users, products, orders, order_items, payments','Indexing: product search (full-text), order by user_id + status','Scaling: read replicas for product catalogue, sharding orders by user_id','Caching: Redis for product pages, cart, session','Archive: move old orders to cold storage (S3 + Athena for analytics)']}
+];
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let checked = JSON.parse(localStorage.getItem('pp_checked')||'{}');
+let quizAnswered = {};
+let quizStats = {att:0,cor:0,wr:0};
+let quizFiltered = [...QUIZ_QUESTIONS];
+let quizCur = 0;
+let activeCats = new Set(['ML','SQL','DSA','OS','Networks','System Design']);
+let currentRoadmapMonth = 0;
+let currentView = 'dashboard';
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function nav(id) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('v-'+id).classList.add('active');
+  const sbi = document.querySelector(`.sb-item[onclick="nav('${id}')"]`);
+  if(sbi) sbi.classList.add('active');
+  currentView = id;
+  if(id==='dashboard') renderDashboard();
+  if(id==='roadmap') renderRoadmap(0);
+  if(id==='ml') renderTopics('ml');
+  if(id==='db') renderTopics('db');
+  if(id==='cs') renderTopics('cs');
+  if(id==='dsa') renderTopics('dsa');
+  if(id==='quiz') renderQuiz();
+  if(id==='behavioural') renderBehavioural();
+  if(id==='sysdesign') renderSysDesign();
+}
+
+// ═══════════════════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════════════════
+function getAllItems() {
+  let all = [];
+  ['ml','db','cs','dsa'].forEach(track=>{
+    TOPICS[track].forEach(t=>t.items.forEach((_,i)=>all.push(track+'_'+t.id+'_'+i)));
+  });
+  return all;
+}
+function countDone(track) {
+  let done=0,total=0;
+  TOPICS[track].forEach(t=>t.items.forEach((_,i)=>{total++;if(checked[track+'_'+t.id+'_'+i])done++;}));
+  return {done,total};
+}
+function updateProgress() {
+  let totalDone=0,totalAll=0;
+  ['ml','db','cs','dsa'].forEach(track=>{
+    const {done,total}=countDone(track);
+    totalDone+=done; totalAll+=total;
+  });
+  const pct = totalAll ? Math.round(totalDone/totalAll*100) : 0;
+  document.getElementById('sb-pct').textContent=pct+'%';
+  document.getElementById('sb-fill').style.width=pct+'%';
+  document.getElementById('d-done').textContent=totalDone;
+  document.getElementById('d-total').textContent=totalAll;
+  localStorage.setItem('pp_checked',JSON.stringify(checked));
+  const qpct = quizStats.att ? Math.round(quizStats.cor/quizStats.att*100) : 0;
+  document.getElementById('d-qscore').textContent=qpct+'%';
+}
+
+// ═══════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════
+function renderDashboard() {
+  updateProgress();
+  // track bars
+  const tb = document.getElementById('track-bars');
+  const tracks = [
+    {key:'ml',label:'ML Engineer',color:'var(--ml)'},
+    {key:'db',label:'DB / Backend',color:'var(--db)'},
+    {key:'cs',label:'CS Fundamentals',color:'var(--cs)'},
+    {key:'dsa',label:'DSA & Coding',color:'var(--dsa)'}
+  ];
+  tb.innerHTML = tracks.map(t=>{
+    const {done,total}=countDone(t.key);
+    const pct=total?Math.round(done/total*100):0;
+    return `<div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;">
+        <span style="color:${t.color};font-weight:500;">${t.label}</span>
+        <span style="color:var(--muted);font-family:var(--fm);">${done}/${total} · ${pct}%</span>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${t.color};"></div></div>
+    </div>`;
+  }).join('');
+
+  // this week
+  const wk = document.getElementById('this-week-content');
+  const now = new Date();
+  const monthIdx = Math.min(5, Math.floor((now - new Date('2025-03-20')) / (1000*60*60*24*30)));
+  const m = ROADMAP_MONTHS[Math.max(0,monthIdx)];
+  wk.innerHTML = `<div style="font-size:12px;color:var(--muted);margin-bottom:8px;font-family:var(--fm);">${m.title} · ${m.phase}</div>` +
+    m.focus.slice(0,4).map(f=>`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--b1);font-size:12px;color:var(--muted);">
+      <span style="color:${m.color};flex-shrink:0;">▸</span>${f}</div>`).join('') +
+    `<button class="btn" style="margin-top:12px;font-size:11px;" onclick="nav('roadmap')">View full roadmap →</button>`;
+
+  // milestones
+  const ml = document.getElementById('milestones-content');
+  const milestonesData = [
+    {label:'30 LeetCode problems solved',done: Object.keys(checked).filter(k=>k.startsWith('dsa')).length >= 10},
+    {label:'SQL JOINs written from memory',done: checked['db_db1_1']},
+    {label:'Classical ML algorithms covered',done: checked['ml_ml2_0']},
+    {label:'Deep learning module done',done: checked['ml_ml4_0']},
+    {label:'First project deployed',done: checked['ml_ml7_0']},
+  ];
+  ml.innerHTML = milestonesData.map(m=>`
+    <div class="check-item ${m.done?'done':''}" style="cursor:default;">
+      <div class="ci-box">${m.done?'✓':''}</div>
+      <div class="ci-text" style="font-size:12px;">${m.label}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// ROADMAP
+// ═══════════════════════════════════════════════════
+function renderRoadmap(idx) {
+  currentRoadmapMonth = idx;
+  const tabs = document.getElementById('roadmap-tabs');
+  tabs.innerHTML = ROADMAP_MONTHS.map((m,i)=>`
+    <button class="mtab ${i===idx?'active':''}" onclick="renderRoadmap(${i})">Month ${m.num}</button>`).join('');
+
+  const m = ROADMAP_MONTHS[idx];
+  const cont = document.getElementById('roadmap-content');
+  cont.innerHTML = `
+    <div class="g2" style="margin-bottom:14px;">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--s3);border:2px solid ${m.color};
+            display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:14px;font-weight:800;color:${m.color};">${m.num}</div>
+          <div>
+            <div style="font-family:var(--fh);font-size:16px;font-weight:800;">${m.title}</div>
+            <div style="font-size:11px;color:var(--muted);font-family:var(--fm);">${m.phase}</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:var(--fm);margin-bottom:8px;">Focus areas</div>
+        ${m.focus.map(f=>`<div class="check-item" style="cursor:default;">
+          <div class="ci-box" style="border-color:${m.color};"></div>
+          <div class="ci-text" style="font-size:12px;">${f}</div>
+        </div>`).join('')}
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px;">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:var(--fm);margin-bottom:10px;">Monthly milestone</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6;padding:10px 12px;background:var(--s2);border-radius:var(--r);border-left:3px solid ${m.color};">${m.milestone}</div>
+        </div>
+        <div class="card">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:var(--fm);margin-bottom:10px;">Key resources</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;">
+            ${m.resources.map(r=>`<span class="res-pill">${r}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      ${idx>0?`<button class="btn" onclick="renderRoadmap(${idx-1})">← Month ${idx}</button>`:''}
+      ${idx<5?`<button class="btn btn-primary" onclick="renderRoadmap(${idx+1})">Month ${idx+2} →</button>`:''}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// TOPICS
+// ═══════════════════════════════════════════════════
+function renderTopics(track) {
+  const cont = document.getElementById(track+'-content');
+  const {done,total} = countDone(track);
+  const pct = total ? Math.round(done/total*100) : 0;
+  const tcolor = track==='ml'?'var(--ml)':track==='db'?'var(--db)':track==='cs'?'var(--cs)':'var(--dsa)';
+
+  let html = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+    <div style="flex:1;"><div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${tcolor};"></div></div></div>
+    <span style="font-family:var(--fm);font-size:12px;color:var(--muted);min-width:80px;">${done}/${total} done · ${pct}%</span>
+  </div>`;
+
+  TOPICS[track].forEach(topic=>{
+    const doneCnt = topic.items.filter((_,i)=>checked[track+'_'+topic.id+'_'+i]).length;
+    html += `<div class="topic-card">
+      <div class="tc-head">
+        <span class="badge b-${track==='dsa'?'dsa':track}">${topic.title}</span>
+        <span style="margin-left:auto;font-family:var(--fm);font-size:10px;color:var(--muted);">${doneCnt}/${topic.items.length}</span>
+      </div>
+      <div class="tc-items">
+        ${topic.items.map((item,i)=>{
+          const key=track+'_'+topic.id+'_'+i;
+          const done=checked[key]?'done':'';
+          return `<div class="tc-item ${done}" onclick="toggleCheck('${key}','${track}')">
+            <div class="tc-check">${checked[key]?'✓':''}</div>
+            <div class="tc-text">${item}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function toggleCheck(key, track) {
+  checked[key] = !checked[key];
+  renderTopics(track);
+  updateProgress();
+}
+
+// ═══════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════
+const CAT_COLORS = {
+  'ML':'var(--ml)','SQL':'var(--db)','DSA':'var(--dsa)',
+  'OS':'var(--cs)','Networks':'var(--warn)','System Design':'var(--beh)'
+};
+const CAT_BG = {
+  'ML':'var(--ml-bg)','SQL':'var(--db-bg)','DSA':'var(--dsa-bg)',
+  'OS':'var(--cs-bg)','Networks':'rgba(232,200,79,.12)','System Design':'var(--beh-bg)'
+};
+
+function buildCatBar() {
+  const bar = document.getElementById('quiz-cat-bar');
+  const cats = [...new Set(QUIZ_QUESTIONS.map(q=>q.cat))];
+  bar.innerHTML = `<button class="cat-btn" onclick="setAllCats()" style="${activeCats.size===cats.length?'color:var(--text);border-color:var(--b2);':''}" >All</button>` +
+    cats.map(cat=>{
+      const on = activeCats.has(cat);
+      return `<button class="cat-btn ${on?'on':''}" onclick="toggleCat('${cat}')"
+        style="${on?`color:${CAT_COLORS[cat]};border-color:${CAT_COLORS[cat]};background:${CAT_BG[cat]};`:''}">
+        <span class="cdot" style="background:${CAT_COLORS[cat]};"></span>${cat}
+      </button>`;
+    }).join('');
+}
+
+function toggleCat(cat) {
+  if(activeCats.has(cat)){ if(activeCats.size>1) activeCats.delete(cat); }
+  else activeCats.add(cat);
+  applyQuizFilter();
+}
+function setAllCats() {
+  activeCats = new Set(QUIZ_QUESTIONS.map(q=>q.cat));
+  applyQuizFilter();
+}
+function applyQuizFilter() {
+  quizFiltered = QUIZ_QUESTIONS.filter(q=>activeCats.has(q.cat));
+  quizCur = 0;
+  buildCatBar();
+  renderQuiz();
+}
+
+function renderQuiz() {
+  buildCatBar();
+  buildNavDots();
+  if(!quizFiltered.length){
+    document.getElementById('quiz-container').innerHTML='<p style="color:var(--muted);">No questions match selected categories.</p>';
+    return;
+  }
+  const q = quizFiltered[quizCur];
+  const qIdx = QUIZ_QUESTIONS.indexOf(q);
+  const state = quizAnswered[qIdx];
+  const diffBadge = q.diff==='easy'?'b-easy':q.diff==='medium'?'b-med':'b-hard';
+
+  const opts = q.opts.map((o,i)=>{
+    let cls='q-opt'; let dis='';
+    if(state!==undefined){
+      dis='disabled';
+      if(i===q.ans) cls+=' correct';
+      else if(i===state && i!==q.ans) cls+=' wrong';
+    }
+    return `<button class="${cls}" ${dis} onclick="pickAnswer(${qIdx},${i})">${String.fromCharCode(65+i)}. ${o}</button>`;
+  }).join('');
+
+  const exp = state!==undefined ? `<div class="q-exp">${q.exp}</div>` : '';
+
+  document.getElementById('quiz-container').innerHTML = `
+    <div class="quiz-card">
+      <div class="q-meta">
+        <span class="badge" style="background:${CAT_BG[q.cat]};color:${CAT_COLORS[q.cat]};">${q.cat}</span>
+        <span class="badge ${diffBadge}">${q.diff}</span>
+        <span style="margin-left:auto;font-family:var(--fm);font-size:10px;color:var(--muted);">Q ${quizCur+1} / ${quizFiltered.length}</span>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-opts">${opts}</div>
+      ${exp}
+      <div class="q-actions">
+        ${quizCur>0?`<button class="btn" onclick="prevQ()">← Prev</button>`:''}
+        ${quizCur<quizFiltered.length-1?`<button class="btn btn-primary" onclick="nextQ()">Next →</button>`:''}
+      </div>
+    </div>`;
+
+  updateQuizStats();
+}
+
+function buildNavDots() {
+  const nav = document.getElementById('quiz-nav-dots');
+  nav.innerHTML = quizFiltered.map((q,i)=>{
+    const qIdx = QUIZ_QUESTIONS.indexOf(q);
+    const state = quizAnswered[qIdx];
+    let cls = 'qnav-btn';
+    if(i===quizCur) cls+=' active';
+    else if(state!==undefined && state===q.ans) cls+=' correct';
+    else if(state!==undefined && state!==q.ans) cls+=' wrong';
+    return `<button class="${cls}" onclick="jumpQ(${i})">${i+1}</button>`;
+  }).join('');
+}
+
+function pickAnswer(qIdx, chosen) {
+  if(quizAnswered[qIdx]!==undefined) return;
+  quizAnswered[qIdx] = chosen;
+  quizStats.att++;
+  if(chosen===QUIZ_QUESTIONS[qIdx].ans) quizStats.cor++;
+  else quizStats.wr++;
+  updateQuizStats();
+  renderQuiz();
+}
+function updateQuizStats() {
+  document.getElementById('q-att').textContent=quizStats.att;
+  document.getElementById('q-cor').textContent=quizStats.cor;
+  document.getElementById('q-wr').textContent=quizStats.wr;
+  const pct=quizStats.att?Math.round(quizStats.cor/quizStats.att*100):0;
+  document.getElementById('q-pct').textContent=pct+'%';
+  document.getElementById('d-qscore').textContent=pct+'%';
+}
+function nextQ(){ if(quizCur<quizFiltered.length-1){quizCur++;renderQuiz();} }
+function prevQ(){ if(quizCur>0){quizCur--;renderQuiz();} }
+function jumpQ(i){ quizCur=i;renderQuiz(); }
+function shuffleQuiz(){
+  for(let i=quizFiltered.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [quizFiltered[i],quizFiltered[j]]=[quizFiltered[j],quizFiltered[i]];
+  }
+  quizCur=0;renderQuiz();
+}
+function resetQuiz(){
+  quizAnswered={};quizStats={att:0,cor:0,wr:0};quizCur=0;
+  activeCats=new Set(QUIZ_QUESTIONS.map(q=>q.cat));
+  quizFiltered=[...QUIZ_QUESTIONS];
+  renderQuiz();updateQuizStats();
+}
+
+// ═══════════════════════════════════════════════════
+// BEHAVIOURAL
+// ═══════════════════════════════════════════════════
+function renderBehavioural() {
+  const cont = document.getElementById('beh-content');
+  cont.innerHTML = `<div style="margin-bottom:16px;padding:14px 16px;background:var(--beh-bg);border:1px solid rgba(224,92,138,.2);border-radius:var(--r);">
+    <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--beh2);margin-bottom:6px;">STAR Method</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;">
+      <b style="color:var(--text);">S</b>ituation — set the scene briefly &nbsp;|&nbsp;
+      <b style="color:var(--text);">T</b>ask — your specific responsibility &nbsp;|&nbsp;
+      <b style="color:var(--text);">A</b>ction — what YOU did (say "I" not "we") &nbsp;|&nbsp;
+      <b style="color:var(--text);">R</b>esult — quantified outcome if possible
+    </div>
+  </div>` +
+  BEH_QUESTIONS.map((bq,i)=>`
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--beh-bg);border:1px solid var(--beh);
+          display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:10px;color:var(--beh2);flex-shrink:0;">${i+1}</div>
+        <div style="font-family:var(--fh);font-size:14px;font-weight:600;">${bq.q}</div>
+      </div>
+      <div style="font-size:12px;line-height:1.7;color:var(--muted);background:var(--s2);padding:10px 12px;border-radius:var(--r);margin-bottom:8px;">
+        <span style="color:var(--beh2);font-weight:500;">STAR guide: </span>${bq.star}
+      </div>
+      <div style="font-size:11px;color:var(--hint);padding:6px 12px;border-left:2px solid var(--beh);margin-top:6px;">
+        ${bq.tip}
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// SYSTEM DESIGN — full repo content
+// ═══════════════════════════════════════════════════
+const SD_DATA = {
+  framework:[
+    ['1. Clarify requirements','Functional: what must it do? Non-functional: latency, scale, availability, consistency. Always ask before diving in.'],
+    ['2. Estimate scale','DAU, QPS (read vs write ratio), storage needs. Back-of-envelope: 1M DAU × 10 req/day ≈ 116 req/s.'],
+    ['3. High-level design','Clients → Load Balancer → API servers → DB/Cache. Identify data flow end-to-end first.'],
+    ['4. Deep dive','Pick the hardest component: DB schema, cache strategy, sharding, consistency model.'],
+    ['5. Discuss tradeoffs','SQL vs NoSQL, consistency vs availability, latency vs throughput — show you understand costs.'],
+    ['6. Scalability & monitoring','Horizontal scaling, CDN, replication, auto-scaling, SLIs/SLOs, alerting.']
+  ],
+  sections:[
+    {id:'core', title:'⚙️ Core Concepts', color:'var(--ml)', links:[
+      ['Scalability','https://algomaster.io/learn/system-design/scalability'],
+      ['Availability','https://algomaster.io/learn/system-design/availability'],
+      ['Reliability','https://algomaster.io/learn/system-design/reliability'],
+      ['CAP Theorem','https://blog.algomaster.io/p/cap-theorem-explained'],
+      ['Consistent Hashing','https://blog.algomaster.io/p/consistent-hashing-explained'],
+      ['SPOF (Single Point of Failure)','https://blog.algomaster.io/p/system-design-how-to-avoid-single-point-of-failures'],
+      ['Failover','https://www.druva.com/glossary/what-is-a-failover-definition-and-related-faqs'],
+      ['Fault Tolerance','https://www.cockroachlabs.com/blog/what-is-fault-tolerance/']
+    ]},
+    {id:'network', title:'🌐 Networking Fundamentals', color:'var(--dsa)', links:[
+      ['OSI Model','https://algomaster.io/learn/system-design/osi'],
+      ['IP Addresses','https://algomaster.io/learn/system-design/ip-address'],
+      ['DNS — How it Works','https://blog.algomaster.io/p/how-dns-actually-works'],
+      ['Proxy vs Reverse Proxy','https://blog.algomaster.io/p/proxy-vs-reverse-proxy-explained'],
+      ['HTTP/HTTPS','https://algomaster.io/learn/system-design/http-https'],
+      ['TCP vs UDP','https://algomaster.io/learn/system-design/tcp-vs-udp'],
+      ['Load Balancing Algorithms','https://blog.algomaster.io/p/load-balancing-algorithms-explained-with-code'],
+      ['Checksums','https://algomaster.io/learn/system-design/checksums']
+    ]},
+    {id:'api', title:'🔌 API Fundamentals', color:'var(--db)', links:[
+      ['What is an API','https://algomaster.io/learn/system-design/what-is-an-api'],
+      ['API Gateway','https://blog.algomaster.io/p/what-is-an-api-gateway'],
+      ['REST vs GraphQL','https://blog.algomaster.io/p/rest-vs-graphql'],
+      ['WebSockets','https://blog.algomaster.io/p/websockets'],
+      ['Webhooks','https://algomaster.io/learn/system-design/webhooks'],
+      ['Idempotency','https://algomaster.io/learn/system-design/idempotency'],
+      ['Rate Limiting Algorithms','https://blog.algomaster.io/p/rate-limiting-algorithms-explained-with-code'],
+      ['API Design Best Practices','https://abdulrwahab.medium.com/api-architecture-best-practices-for-designing-rest-apis-bf907025f5f']
+    ]},
+    {id:'dbfund', title:'🗄️ Database Fundamentals', color:'var(--db)', links:[
+      ['ACID Transactions','https://algomaster.io/learn/system-design/acid-transactions'],
+      ['SQL vs NoSQL','https://algomaster.io/learn/system-design/sql-vs-nosql'],
+      ['Database Indexes','https://algomaster.io/learn/system-design/indexing'],
+      ['Database Sharding','https://algomaster.io/learn/system-design/sharding'],
+      ['Data Replication','https://redis.com/blog/what-is-data-replication/'],
+      ['Database Scaling','https://blog.algomaster.io/p/system-design-how-to-scale-a-database'],
+      ['15 Types of Databases','https://blog.algomaster.io/p/15-types-of-databases'],
+      ['Bloom Filters','https://algomaster.io/learn/system-design/bloom-filters'],
+      ['DB Architectures (Active-Active)','https://www.mongodb.com/developer/products/mongodb/active-active-application-architectures/']
+    ]},
+    {id:'cache', title:'⚡ Caching Fundamentals', color:'var(--warn)', links:[
+      ['Caching 101','https://algomaster.io/learn/system-design/what-is-caching'],
+      ['Caching Strategies','https://algomaster.io/learn/system-design/caching-strategies'],
+      ['Cache Eviction Policies','https://blog.algomaster.io/p/7-cache-eviction-strategies'],
+      ['Distributed Caching','https://blog.algomaster.io/p/distributed-caching'],
+      ['Content Delivery Network (CDN)','https://algomaster.io/learn/system-design/content-delivery-network-cdn']
+    ]},
+    {id:'async', title:'🔄 Asynchronous Communication', color:'var(--beh)', links:[
+      ['Pub/Sub Pattern','https://algomaster.io/learn/system-design/pub-sub'],
+      ['Message Queues','https://algomaster.io/learn/system-design/message-queues'],
+      ['Change Data Capture (CDC)','https://algomaster.io/learn/system-design/change-data-capture-cdc']
+    ]},
+    {id:'dist', title:'🧩 Distributed Systems & Microservices', color:'var(--cs)', links:[
+      ['Heartbeats in Distributed Systems','https://blog.algomaster.io/p/heartbeats-in-distributed-systems'],
+      ['Service Discovery','https://blog.algomaster.io/p/service-discovery-in-distributed-systems'],
+      ['Consensus Algorithms','https://medium.com/@sourabhatta1819/consensus-in-distributed-system-ac79f8ba2b8c'],
+      ['Distributed Locking','https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html'],
+      ['Microservices Guidelines (Netflix)','https://newsletter.systemdesign.one/p/netflix-microservices'],
+      ['Gossip Protocol','http://highscalability.com/blog/2023/7/16/gossip-protocol-explained.html'],
+      ['Circuit Breaker Pattern','https://medium.com/geekculture/design-patterns-for-microservices-circuit-breaker-pattern-276249ffab33'],
+      ['Disaster Recovery','https://cloud.google.com/learn/what-is-disaster-recovery'],
+      ['Distributed Tracing','https://www.dynatrace.com/news/blog/what-is-distributed-tracing/']
+    ]},
+    {id:'arch', title:'🖇️ Architectural Patterns', color:'var(--ml)', links:[
+      ['Client-Server Architecture','https://algomaster.io/learn/system-design/client-server-architecture'],
+      ['Microservices Architecture','https://medium.com/hashmapinc/the-what-why-and-how-of-a-microservices-architecture-4179579423a9'],
+      ['Serverless Architecture','https://blog.algomaster.io/p/2edeb23b-cfa5-4b24-845e-3f6f7a39d162'],
+      ['Event-Driven Architecture','https://www.confluent.io/learn/event-driven-architecture/'],
+      ['Peer-to-Peer (P2P) Architecture','https://www.spiceworks.com/tech/networking/articles/what-is-peer-to-peer/']
+    ]},
+    {id:'tradeoffs', title:'⚖️ System Design Tradeoffs', color:'var(--cs)', links:[
+      ['Top 15 Tradeoffs','https://blog.algomaster.io/p/system-design-top-15-trade-offs'],
+      ['Vertical vs Horizontal Scaling','https://algomaster.io/learn/system-design/vertical-vs-horizontal-scaling'],
+      ['Concurrency vs Parallelism','https://blog.algomaster.io/p/concurrency-vs-parallelism'],
+      ['Long Polling vs WebSockets','https://blog.algomaster.io/p/long-polling-vs-websockets'],
+      ['Batch vs Stream Processing','https://blog.algomaster.io/p/batch-processing-vs-stream-processing'],
+      ['Stateful vs Stateless Design','https://blog.algomaster.io/p/stateful-vs-stateless-architecture'],
+      ['Strong vs Eventual Consistency','https://blog.algomaster.io/p/strong-vs-eventual-consistency'],
+      ['Read-Through vs Write-Through Cache','https://blog.algomaster.io/p/59cae60d-9717-4e20-a59e-759e370db4e5'],
+      ['Push vs Pull Architecture','https://blog.algomaster.io/p/af5fe2fe-9a4f-4708-af43-184945a243af'],
+      ['REST vs RPC','https://blog.algomaster.io/p/106604fb-b746-41de-88fb-60e932b2ff68'],
+      ['Sync vs Async Communications','https://blog.algomaster.io/p/aec1cebf-6060-45a7-8e00-47364ca70761'],
+      ['Latency vs Throughput','https://aws.amazon.com/compare/the-difference-between-throughput-and-latency/']
+    ]}
+  ],
+  problems:{
+    easy:[
+      ['Design URL Shortener like TinyURL','https://algomaster.io/learn/system-design-interviews/design-url-shortener'],
+      ['Design Autocomplete for Search Engines','https://algomaster.io/learn/system-design-interviews/design-instagram'],
+      ['Design Load Balancer','https://algomaster.io/learn/system-design-interviews/design-load-balancer'],
+      ['Design Content Delivery Network (CDN)','https://www.youtube.com/watch?v=8zX0rue2Hic'],
+      ['Design Parking Garage','https://www.youtube.com/watch?v=NtMvNh0WFVM'],
+      ['Design Vending Machine','https://www.youtube.com/watch?v=D0kDMUgo27c'],
+      ['Design Distributed Key-Value Store','https://www.youtube.com/watch?v=rnZmdmlR-2M'],
+      ['Design Distributed Cache','https://www.youtube.com/watch?v=iuqZvajTOyA'],
+      ['Design Authentication System','https://www.youtube.com/watch?v=uj_4vxm9u90'],
+      ['Design Unified Payments Interface (UPI)','https://www.youtube.com/watch?v=QpLy0_c_RXk']
+    ],
+    medium:[
+      ['Design WhatsApp','https://algomaster.io/learn/system-design-interviews/design-whatsapp'],
+      ['Design Spotify','https://algomaster.io/learn/system-design-interviews/design-spotify'],
+      ['Design Instagram','https://algomaster.io/learn/system-design-interviews/design-instagram'],
+      ['Design Notification Service','https://algomaster.io/learn/system-design-interviews/design-notification-service'],
+      ['Design Distributed Job Scheduler','https://blog.algomaster.io/p/design-a-distributed-job-scheduler'],
+      ['Design Tinder','https://www.youtube.com/watch?v=tndzLznxq40'],
+      ['Design Facebook','https://www.youtube.com/watch?v=9-hjBGxuiEs'],
+      ['Design Twitter','https://www.youtube.com/watch?v=wYk0xPP_P_8'],
+      ['Design Reddit','https://www.youtube.com/watch?v=KYExYE_9nIY'],
+      ['Design Netflix','https://www.youtube.com/watch?v=psQzyFfsUGU'],
+      ['Design Youtube','https://www.youtube.com/watch?v=jPKTo1iGQiE'],
+      ['Design Google Search','https://www.youtube.com/watch?v=CeGtqouT8eA'],
+      ['Design E-commerce Store (Amazon)','https://www.youtube.com/watch?v=EpASu_1dUdE'],
+      ['Design TikTok','https://www.youtube.com/watch?v=Z-0g_aJL5Fw'],
+      ['Design Shopify','https://www.youtube.com/watch?v=lEL4F_0J3l8'],
+      ['Design Airbnb','https://www.youtube.com/watch?v=YyOXt2MEkv4'],
+      ['Design Rate Limiter','https://www.youtube.com/watch?v=mhUQe4BKZXs'],
+      ['Design Distributed Message Queue (Kafka)','https://www.youtube.com/watch?v=iJLL-KPqBpM'],
+      ['Design Flight Booking System','https://www.youtube.com/watch?v=qsGcfVGvFSs'],
+      ['Design Online Code Editor','https://www.youtube.com/watch?v=07jkn4jUtso'],
+      ['Design Analytics Platform (Metrics & Logging)','https://www.youtube.com/watch?v=kIcq1_pBQSY'],
+      ['Design Payment System','https://www.youtube.com/watch?v=olfaBgJrUBI'],
+      ['Design a Digital Wallet','https://www.youtube.com/watch?v=4ijjIUeq6hE']
+    ],
+    hard:[
+      ['Design Location Based Service (Yelp)','https://www.youtube.com/watch?v=M4lR_Va97cQ'],
+      ['Design Uber','https://www.youtube.com/watch?v=umWABit-wbk'],
+      ['Design Food Delivery App (Doordash)','https://www.youtube.com/watch?v=iRhSAR3ldTw'],
+      ['Design Google Docs','https://www.youtube.com/watch?v=2auwirNBvGg'],
+      ['Design Google Maps','https://www.youtube.com/watch?v=jk3yvVfNvds'],
+      ['Design Zoom','https://www.youtube.com/watch?v=G32ThJakeHk'],
+      ['Design Distributed Counter','https://systemdesign.one/distributed-counter-system-design/'],
+      ['Design File Sharing System (Dropbox)','https://www.youtube.com/watch?v=U0xTu6E2CT8'],
+      ['Design Ticket Booking (BookMyShow)','https://www.youtube.com/watch?v=lBAwJgoO3Ek'],
+      ['Design Distributed Web Crawler','https://www.youtube.com/watch?v=BKZxZwUgL3Y'],
+      ['Design Code Deployment System','https://www.youtube.com/watch?v=q0KGYwNbf-0'],
+      ['Design Distributed Cloud Storage (S3)','https://www.youtube.com/watch?v=UmWtcgC96X8'],
+      ['Design Distributed Locking Service','https://www.youtube.com/watch?v=v7x75aN9liM'],
+      ['Design Slack','https://systemdesign.one/slack-architecture/'],
+      ['Design Live Comments','https://systemdesign.one/live-comment-system-design/']
+    ]
+  },
+  youtube:[
+    ['Tech Dummies Narendra L','https://www.youtube.com/@TechDummiesNarendraL'],
+    ['Gaurav Sen','https://www.youtube.com/@gkcs'],
+    ['codeKarle','https://www.youtube.com/@codeKarle'],
+    ['ByteByteGo','https://www.youtube.com/@ByteByteGo'],
+    ['System Design Interview','https://www.youtube.com/@SystemDesignInterview'],
+    ['sudoCODE','https://www.youtube.com/@sudocode'],
+    ['Success in Tech','https://www.youtube.com/@SuccessinTech/videos']
+  ],
+  articles:[
+    ['How Discord stores trillions of messages','https://discord.com/blog/how-discord-stores-trillions-of-messages'],
+    ['Building In-Video Search at Netflix','https://netflixtechblog.com/building-in-video-search-936766f0017c'],
+    ['Canva: Zero to 50M uploads/day','https://www.canva.dev/blog/engineering/from-zero-to-50-million-uploads-per-day-scaling-media-at-canva/'],
+    ['Airbnb: Avoiding double payments','https://medium.com/airbnb-engineering/avoiding-double-payments-in-a-distributed-payments-system-2981f6b070bb'],
+    ["Stripe's payments APIs — first 10 years",'https://stripe.com/blog/payment-api-design'],
+    ['Real-time messaging at Slack','https://slack.engineering/real-time-messaging/']
+  ],
+  papers:[
+    ['Paxos: The Part-Time Parliament','https://lamport.azurewebsites.net/pubs/lamport-paxos.pdf'],
+    ['MapReduce: Simplified Data Processing','https://research.google.com/archive/mapreduce-osdi04.pdf'],
+    ['The Google File System','https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf'],
+    ['Dynamo: Amazon Key-value Store','https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf'],
+    ['Kafka: Distributed Messaging System','https://notes.stephenholiday.com/Kafka.pdf'],
+    ["Spanner: Google's Globally-Distributed DB",'https://static.googleusercontent.com/media/research.google.com/en//archive/spanner-osdi2012.pdf'],
+    ['Bigtable: Distributed Storage System','https://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf'],
+    ['ZooKeeper: Internet-scale Coordination','https://www.usenix.org/legacy/event/usenix10/tech/full_papers/Hunt.pdf'],
+    ['The Log-Structured Merge-Tree (LSM-Tree)','https://www.cs.umb.edu/~poneil/lsmtree.pdf'],
+    ['Chubby: Distributed Lock Service','https://static.googleusercontent.com/media/research.google.com/en//archive/chubby-osdi06.pdf']
+  ]
+};
+
+let sdChecked = JSON.parse(localStorage.getItem('pp_sd_checked')||'{}');
+let sdActiveTab = 'framework';
+
+function sdTab(t){
+  sdActiveTab=t;
+  document.querySelectorAll('.sd-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.sd-tab[data-t="${t}"]`).classList.add('active');
+  renderSdPanel();
+}
+
+function renderSdPanel(){
+  const cont=document.getElementById('sd-panel');
+  if(sdActiveTab==='framework'){
+    cont.innerHTML=`
+      <div style="margin-bottom:16px;padding:12px 14px;background:var(--ml-bg);border:1px solid rgba(124,111,205,.2);border-radius:var(--r);">
+        <span style="font-size:11px;font-family:var(--fm);color:var(--ml2);">START HERE → </span>
+        <a href="https://algomaster.io/learn/system-design-interviews/answering-framework" target="_blank"
+           style="font-size:12px;color:var(--ml2);">How to Answer a System Design Interview Problem ↗</a>
+      </div>
+      <div class="g2">
+        ${SD_DATA.framework.map(([t,d])=>`
+          <div style="padding:12px 14px;background:var(--s2);border-radius:var(--r);border:1px solid var(--b1);">
+            <div style="font-size:12px;font-weight:600;color:var(--ml2);margin-bottom:5px;">${t}</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.6;">${d}</div>
+          </div>`).join('')}
+      </div>`;
+  } else if(sdActiveTab==='concepts'){
+    cont.innerHTML = SD_DATA.sections.map(sec=>`
+      <div class="card" style="margin-bottom:14px;">
+        <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:${sec.color};margin-bottom:12px;">${sec.title}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          ${sec.links.map(([label,url])=>{
+            const k='sd_'+sec.id+'_'+label.replace(/\s+/g,'_');
+            const done=sdChecked[k];
+            return `<a href="${url}" target="_blank" onclick="markSdDone('${k}')" 
+              style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;
+              border:1px solid ${done?sec.color:'var(--b2)'};border-radius:20px;
+              background:${done?`rgba(var(--${sec.color.replace('var(--','').replace(')','')}-rgb,79,196,160),.1)`:'transparent'};
+              color:${done?sec.color:'var(--muted)'};font-size:11px;text-decoration:none;
+              transition:all .15s;font-family:var(--fb);"
+              onmouseover="this.style.color='${sec.color}';this.style.borderColor='${sec.color}'"
+              onmouseout="this.style.color='${done?sec.color:'var(--muted)'}';this.style.borderColor='${done?sec.color:'var(--b2)'}'">
+              ${done?'✓ ':''}${label} ↗
+            </a>`;
+          }).join('')}
+        </div>
+      </div>`).join('');
+  } else if(sdActiveTab==='problems'){
+    const diffCfg=[
+      ['easy','Easy',SD_DATA.problems.easy,'var(--ok)','rgba(79,196,122,.12)'],
+      ['medium','Medium',SD_DATA.problems.medium,'var(--warn)','rgba(232,200,79,.12)'],
+      ['hard','Hard',SD_DATA.problems.hard,'var(--err)','rgba(224,92,92,.12)']
+    ];
+    cont.innerHTML=diffCfg.map(([diff,label,items,col,bg])=>`
+      <div class="card" style="margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          <span style="padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--fm);background:${bg};color:${col};">${label}</span>
+          <span style="font-size:11px;color:var(--muted);font-family:var(--fm);">${items.filter(([l])=>sdChecked['sdp_'+l.replace(/\s+/g,'_')]).length}/${items.length} done</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          ${items.map(([label,url])=>{
+            const k='sdp_'+label.replace(/\s+/g,'_');
+            const done=sdChecked[k];
+            const isYT=url.includes('youtube.com');
+            return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--b1);">
+              <div onclick="toggleSdProblem('${k}')" style="width:16px;height:16px;border:1px solid ${done?col:'var(--b2)'};
+                border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+                cursor:pointer;font-size:10px;background:${done?bg:'transparent'};color:${col};transition:all .15s;">${done?'✓':''}</div>
+              <a href="${url}" target="_blank" style="font-size:13px;color:${done?'var(--hint)':'var(--text)'};
+                text-decoration:${done?'line-through':'none'};flex:1;transition:color .15s;"
+                onmouseover="this.style.color='${col}'" onmouseout="this.style.color='${done?'var(--hint)':'var(--text)'}'">
+                ${label}
+              </a>
+              <span style="font-size:10px;font-family:var(--fm);padding:2px 7px;border-radius:10px;
+                background:var(--s3);color:var(--muted);">${isYT?'YT':'Article'}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`).join('');
+  } else if(sdActiveTab==='resources'){
+    cont.innerHTML=`
+      <div class="g2" style="margin-bottom:14px;">
+        <div class="card">
+          <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--err);margin-bottom:12px;">📺 YouTube Channels</div>
+          ${SD_DATA.youtube.map(([n,u])=>`
+            <a href="${u}" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 0;
+              border-bottom:1px solid var(--b1);color:var(--muted);text-decoration:none;font-size:13px;
+              transition:color .15s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">
+              <span style="color:var(--err);font-size:12px;">▶</span>${n} ↗
+            </a>`).join('')}
+        </div>
+        <div class="card">
+          <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--db2);margin-bottom:12px;">📚 Books & Courses</div>
+          <a href="https://www.amazon.in/dp/9352135245" target="_blank" style="display:flex;gap:10px;padding:10px;
+            background:var(--s2);border-radius:var(--r);text-decoration:none;margin-bottom:8px;border:1px solid var(--b1);">
+            <div>
+              <div style="font-size:12px;color:var(--text);font-weight:500;">Designing Data-Intensive Applications</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;">Martin Kleppmann — The bible for system design interviews</div>
+            </div>
+          </a>
+          <a href="https://algomaster.io/learn/system-design/course-introduction" target="_blank" style="display:flex;gap:10px;padding:10px;
+            background:var(--s2);border-radius:var(--r);text-decoration:none;margin-bottom:8px;border:1px solid var(--b1);">
+            <div>
+              <div style="font-size:12px;color:var(--text);font-weight:500;">System Design Fundamentals (Free)</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;">AlgoMaster — structured learning path</div>
+            </div>
+          </a>
+          <a href="https://algomaster.io/learn/system-design-interviews/introduction" target="_blank" style="display:flex;gap:10px;padding:10px;
+            background:var(--s2);border-radius:var(--r);text-decoration:none;border:1px solid var(--b1);">
+            <div>
+              <div style="font-size:12px;color:var(--text);font-weight:500;">System Design Interviews (Free)</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;">AlgoMaster — interview-focused problems</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:14px;">
+        <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--cs2);margin-bottom:12px;">📜 Must-Read Engineering Articles</div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          ${SD_DATA.articles.map(([n,u])=>`
+            <a href="${u}" target="_blank" style="display:flex;align-items:center;gap:8px;padding:9px 0;
+              border-bottom:1px solid var(--b1);color:var(--muted);text-decoration:none;font-size:13px;
+              transition:color .15s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">
+              <span style="color:var(--cs);flex-shrink:0;font-size:11px;">◆</span>${n} ↗
+            </a>`).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--ml2);margin-bottom:12px;">🗞️ Must-Read Distributed Systems Papers</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-family:var(--fm);">These papers built the foundations of modern distributed systems. Skim at minimum — deep-read 2-3 relevant ones.</div>
+        <div style="display:flex;flex-direction:column;gap:0;">
+          ${SD_DATA.papers.map(([n,u])=>`
+            <a href="${u}" target="_blank" style="display:flex;align-items:center;gap:8px;padding:9px 0;
+              border-bottom:1px solid var(--b1);color:var(--muted);text-decoration:none;font-size:12px;font-family:var(--fm);
+              transition:color .15s;" onmouseover="this.style.color='var(--ml2)'" onmouseout="this.style.color='var(--muted)'">
+              <span style="color:var(--ml);flex-shrink:0;">PDF</span>${n} ↗
+            </a>`).join('')}
+        </div>
+      </div>`;
+  }
+}
+
+function markSdDone(k){ sdChecked[k]=true; localStorage.setItem('pp_sd_checked',JSON.stringify(sdChecked)); renderSdPanel(); }
+function toggleSdProblem(k){ sdChecked[k]=!sdChecked[k]; localStorage.setItem('pp_sd_checked',JSON.stringify(sdChecked)); renderSdPanel(); }
+
+function renderSysDesign() {
+  // Count problems done
+  const totalProbs = SD_DATA.problems.easy.length+SD_DATA.problems.medium.length+SD_DATA.problems.hard.length;
+  const doneProbs = Object.keys(sdChecked).filter(k=>k.startsWith('sdp_')&&sdChecked[k]).length;
+  const doneConc = Object.keys(sdChecked).filter(k=>k.startsWith('sd_')&&!k.startsWith('sdp_')&&sdChecked[k]).length;
+  const totalConc = SD_DATA.sections.reduce((a,s)=>a+s.links.length,0);
+
+  const cont = document.getElementById('sd-content');
+  cont.innerHTML = `
+    <div class="g3" style="margin-bottom:18px;">
+      <div class="stat-card">
+        <div class="stat-v" style="color:var(--ok);">${doneProbs}</div>
+        <div class="stat-l">Problems done / ${totalProbs}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-v" style="color:var(--ml);">${doneConc}</div>
+        <div class="stat-l">Concepts read / ${totalConc}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-v" style="color:var(--warn);">${SD_DATA.problems.easy.length+SD_DATA.problems.medium.length+SD_DATA.problems.hard.length}</div>
+        <div class="stat-l">Total problems</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+      <button class="sd-tab mtab ${sdActiveTab==='framework'?'active':''}" data-t="framework" onclick="sdTab('framework')">Framework</button>
+      <button class="sd-tab mtab ${sdActiveTab==='concepts'?'active':''}" data-t="concepts" onclick="sdTab('concepts')">Concepts (${totalConc} topics)</button>
+      <button class="sd-tab mtab ${sdActiveTab==='problems'?'active':''}" data-t="problems" onclick="sdTab('problems')">Interview Problems (${totalProbs})</button>
+      <button class="sd-tab mtab ${sdActiveTab==='resources'?'active':''}" data-t="resources" onclick="sdTab('resources')">Resources & Papers</button>
+    </div>
+    <div id="sd-panel"></div>`;
+
+  renderSdPanel();
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+// Streak (simple: check localStorage for today)
+function checkStreak() {
+  const today = new Date().toDateString();
+  const last = localStorage.getItem('pp_last_visit');
+  let streak = parseInt(localStorage.getItem('pp_streak')||'0');
+  if(last !== today) {
+    const yesterday = new Date(Date.now()-86400000).toDateString();
+    streak = (last===yesterday) ? streak+1 : 1;
+    localStorage.setItem('pp_streak',streak);
+    localStorage.setItem('pp_last_visit',today);
+  }
+  document.getElementById('d-streak').textContent = streak;
+}
+
+checkStreak();
+nav('dashboard');
+</script>
+</body>
+</html>
