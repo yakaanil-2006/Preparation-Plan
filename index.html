@@ -301,10 +301,112 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
   .g3{grid-template-columns:1fr 1fr;}
   .g2{grid-template-columns:1fr;}
 }
-@media(max-width:600px){
+
+/* ── MOBILE: full overhaul ── */
+@media(max-width:640px){
   .sidebar{display:none;}
-  .main{padding:16px;}
-  .g3,.g4{grid-template-columns:1fr;}
+  .shell{flex-direction:column;}
+  .main{padding:16px 14px 90px 14px;min-height:100vh;}
+  .ph{margin-bottom:18px;padding-bottom:14px;}
+  .ph h2{font-size:26px;letter-spacing:.01em;}
+  .ph p{font-size:12px;margin-top:6px;}
+  .g2,.g3,.g4{grid-template-columns:1fr;gap:10px;}
+  .g4{grid-template-columns:1fr 1fr !important;}
+  .card{padding:14px 14px;}
+  .stat-v{font-size:26px;}
+  .stat-l{font-size:10px;}
+  .topic-card{padding:12px 13px;}
+  .tc-title{font-size:14px;}
+  .tc-item{font-size:12px;padding:6px 0;}
+  .tc-check{width:18px;height:18px;flex-shrink:0;}
+  .quiz-card{padding:16px 14px;}
+  .q-text{font-size:16px;line-height:1.35;}
+  .q-opt{padding:12px 14px;font-size:13px;min-height:44px;}
+  .q-exp{font-size:12px;padding:10px 12px;}
+  .month-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:6px;}
+  .month-tabs::-webkit-scrollbar{display:none;}
+  .mtab{flex-shrink:0;white-space:nowrap;}
+  .cat-bar{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+  .cat-bar::-webkit-scrollbar{display:none;}
+  .cat-btn{flex-shrink:0;white-space:nowrap;min-height:36px;}
+  .quiz-nav{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+  .quiz-nav::-webkit-scrollbar{display:none;}
+  .qnav-btn{flex-shrink:0;width:36px;height:36px;}
+  .btn{min-height:40px;padding:8px 16px;font-size:12px;}
+  .check-item{padding:11px 0;}
+  .ci-box{width:20px;height:20px;}
+  .ci-text{font-size:13px;}
+  .q-actions{gap:6px;}
+  .q-actions .btn{flex:1;text-align:center;justify-content:center;}
+}
+
+/* ── MOBILE BOTTOM NAV ── */
+.mob-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;
+  background:var(--s1);border-top:1px solid var(--b2);
+  padding:0 0 env(safe-area-inset-bottom,0);
+  height:calc(58px + env(safe-area-inset-bottom,0));
+}
+.mob-nav-inner{display:flex;align-items:stretch;height:58px;}
+.mob-nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;border:none;background:transparent;color:var(--muted);
+  font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;cursor:pointer;transition:all .12s;
+  padding:0 4px;min-width:0;
+}
+.mob-nav-btn.active{color:var(--ml2);}
+.mnb-icon{font-size:19px;line-height:1;flex-shrink:0;}
+.mnb-label{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+
+/* ── MOBILE DRAWER ── */
+.mob-drawer-overlay{
+  display:none;position:fixed;inset:0;z-index:900;
+  background:rgba(0,0,0,0.75);opacity:0;transition:opacity .25s;pointer-events:none;
+}
+.mob-drawer-overlay.open{opacity:1;pointer-events:all;}
+.mob-drawer{
+  display:none;position:fixed;top:0;left:0;bottom:0;z-index:950;
+  width:268px;background:var(--s1);border-right:1px solid var(--b2);
+  transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;scrollbar-width:none;flex-direction:column;
+}
+.mob-drawer::-webkit-scrollbar{display:none;}
+.mob-drawer.open{transform:translateX(0);}
+
+/* ── MOBILE TOP BAR ── */
+.mob-topbar{
+  display:none;position:sticky;top:0;z-index:100;
+  background:var(--s1);border-bottom:1px solid var(--b2);
+  padding:11px 16px;
+  flex-direction:row;align-items:center;justify-content:space-between;
+}
+.mob-topbar-logo{font-family:var(--fh);font-size:18px;font-weight:900;color:var(--ml2);letter-spacing:.06em;text-transform:uppercase;}
+.mob-menu-btn{
+  width:38px;height:38px;border:1px solid var(--b2);border-radius:4px;
+  background:transparent;color:var(--text);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.mob-progress-pill{
+  font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);background:var(--s2);padding:5px 10px;border-radius:3px;border:1px solid var(--b1);
+}
+
+@media(max-width:640px){
+  .mob-nav{display:block;}
+  .mob-drawer{display:flex;}
+  .mob-drawer-overlay{display:block;}
+  .mob-topbar{display:flex;}
+  body.drawer-open{overflow:hidden;}
+}
+
+/* ── TOUCH: active states instead of hover ── */
+@media(hover:none){
+  .q-opt:active:not(:disabled){background:var(--s3);}
+  .btn:active{opacity:.75;transform:scale(.98);}
+  .mtab:active{opacity:.75;}
+  .tc-item:active{color:var(--text);}
+  .mob-nav-btn:active{color:var(--ml2);}
 }
 
 /* ── DIVIDER ── */
@@ -325,6 +427,68 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
 </style>
 </head>
 <body>
+
+<!-- ── MOBILE TOP BAR ── -->
+<div class="mob-topbar" id="mob-topbar">
+  <div class="mob-topbar-logo">PrepTrack</div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="mob-progress-pill" id="mob-pct-pill">0%</div>
+    <button class="mob-menu-btn" onclick="openDrawer()" aria-label="Menu">&#9776;</button>
+  </div>
+</div>
+
+<!-- ── MOBILE DRAWER OVERLAY ── -->
+<div class="mob-drawer-overlay" id="mob-overlay" onclick="closeDrawer()"></div>
+
+<!-- ── MOBILE DRAWER ── -->
+<div class="mob-drawer" id="mob-drawer">
+  <div class="sb-head" style="display:flex;align-items:flex-start;justify-content:space-between;">
+    <div>
+      <div class="logo">PrepTrack</div>
+      <div class="sub">6-MONTH ROADMAP</div>
+      <div class="name">Anil &middot; ML &amp; DB Engineer</div>
+    </div>
+    <button onclick="closeDrawer()" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:0;line-height:1;margin-top:2px;">&times;</button>
+  </div>
+  <div class="sb-sec">Overview</div>
+  <div class="sb-item" onclick="navMob('dashboard')"><span class="sb-icon">&#11042;</span>Dashboard</div>
+  <div class="sb-item" onclick="navMob('roadmap')"><span class="sb-icon">&#10792;</span>6-Month Roadmap</div>
+  <div class="sb-sec">Study Tracks</div>
+  <div class="sb-item" onclick="navMob('ml')"><span class="sb-icon" style="color:var(--ml)">&#9865;</span>ML Engineer<span class="sb-ct">8 topics</span></div>
+  <div class="sb-item" onclick="navMob('db')"><span class="sb-icon" style="color:var(--db)">&#9865;</span>DB / Backend<span class="sb-ct">7 topics</span></div>
+  <div class="sb-item" onclick="navMob('cs')"><span class="sb-icon" style="color:var(--cs)">&#9865;</span>CS Fundamentals<span class="sb-ct">6 topics</span></div>
+  <div class="sb-item" onclick="navMob('dsa')"><span class="sb-icon" style="color:var(--dsa)">&#9865;</span>DSA &amp; Coding<span class="sb-ct">5 topics</span></div>
+  <div class="sb-sec">Practice</div>
+  <div class="sb-item" onclick="navMob('quiz')"><span class="sb-icon">&#10792;</span>Practice Quiz<span class="sb-ct">40 Qs</span></div>
+  <div class="sb-item" onclick="navMob('behavioural')"><span class="sb-icon">&#10792;</span>Behavioural<span class="sb-ct">10 Qs</span></div>
+  <div class="sb-item" onclick="navMob('sysdesign')"><span class="sb-icon">&#10792;</span>System Design</div>
+  <div class="sb-progress">
+    <div class="sp-label"><span>Overall progress</span><span id="mob-drawer-pct">0%</span></div>
+    <div class="sp-bar"><div class="sp-fill" id="mob-drawer-fill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- ── MOBILE BOTTOM NAV ── -->
+<div class="mob-nav" id="mob-nav">
+  <div class="mob-nav-inner">
+    <button class="mob-nav-btn active" id="mnb-dashboard" onclick="navMob('dashboard')">
+      <span class="mnb-icon">&#8962;</span><span class="mnb-label">Home</span>
+    </button>
+    <button class="mob-nav-btn" id="mnb-roadmap" onclick="navMob('roadmap')">
+      <span class="mnb-icon">&#128197;</span><span class="mnb-label">Roadmap</span>
+    </button>
+    <button class="mob-nav-btn" id="mnb-quiz" onclick="navMob('quiz')">
+      <span class="mnb-icon">&#9998;</span><span class="mnb-label">Quiz</span>
+    </button>
+    <button class="mob-nav-btn" id="mnb-sysdesign" onclick="navMob('sysdesign')">
+      <span class="mnb-icon">&#9648;</span><span class="mnb-label">SysDesign</span>
+    </button>
+    <button class="mob-nav-btn" id="mnb-more" onclick="openDrawer()">
+      <span class="mnb-icon">&#9776;</span><span class="mnb-label">More</span>
+    </button>
+  </div>
+</div>
+
 <div class="shell">
 
 <!-- ── SIDEBAR ── -->
@@ -1608,6 +1772,55 @@ function checkStreak() {
 
 checkStreak();
 nav('dashboard');
+
+// ═══════════════════════════════════════
+// MOBILE: DRAWER + BOTTOM NAV + PROGRESS
+// ═══════════════════════════════════════
+const MOB_NAV_MAP = {
+  'dashboard':'mnb-dashboard','roadmap':'mnb-roadmap',
+  'quiz':'mnb-quiz','sysdesign':'mnb-sysdesign',
+  'ml':'mnb-more','db':'mnb-more','cs':'mnb-more',
+  'dsa':'mnb-more','behavioural':'mnb-more'
+};
+
+function openDrawer(){
+  document.getElementById('mob-drawer').classList.add('open');
+  document.getElementById('mob-overlay').classList.add('open');
+  document.body.classList.add('drawer-open');
+  document.querySelectorAll('#mob-drawer .sb-item').forEach(i=>i.classList.remove('active'));
+  const a=document.querySelector('#mob-drawer .sb-item[onclick="navMob(\''+currentView+'\')"]');
+  if(a)a.classList.add('active');
+}
+
+function closeDrawer(){
+  document.getElementById('mob-drawer').classList.remove('open');
+  document.getElementById('mob-overlay').classList.remove('open');
+  document.body.classList.remove('drawer-open');
+}
+
+function navMob(id){
+  closeDrawer();
+  nav(id);
+  document.querySelectorAll('.mob-nav-btn').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById(MOB_NAV_MAP[id]);
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Patch updateProgress to also update mobile UI
+const _origUp = updateProgress;
+window.updateProgress = function(){
+  _origUp();
+  const pct = document.getElementById('sb-pct').textContent;
+  const fill = document.getElementById('sb-fill').style.width;
+  const pp = document.getElementById('mob-pct-pill');
+  const df = document.getElementById('mob-drawer-fill');
+  const dp = document.getElementById('mob-drawer-pct');
+  if(pp) pp.textContent = pct;
+  if(df) df.style.width = fill;
+  if(dp) dp.textContent = pct;
+};
+window.updateProgress();
 </script>
 </body>
 </html>
