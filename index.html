@@ -422,6 +422,39 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
 .tbl tr:last-child td{border-bottom:none;}
 .tbl tr:hover td{background:rgba(255,255,255,.02);}
 
+
+/* ── NOTES STYLES ── */
+.note-area{
+  width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);
+  color:var(--text);font-family:var(--fb);font-size:13px;line-height:1.65;
+  padding:12px 14px;resize:vertical;min-height:100px;
+  transition:border-color .15s;
+}
+.note-area:focus{outline:none;border-color:var(--ml);}
+.note-saved{font-family:var(--fm);font-size:10px;color:var(--ok);letter-spacing:.06em;}
+/* ── ANALYTICS STYLES ── */
+.heatmap-cell{
+  width:14px;height:14px;border-radius:2px;background:var(--s3);
+  transition:background .2s;cursor:default;
+}
+.heatmap-cell.lvl1{background:rgba(139,124,240,.25);}
+.heatmap-cell.lvl2{background:rgba(139,124,240,.5);}
+.heatmap-cell.lvl3{background:rgba(139,124,240,.8);}
+.heatmap-cell.lvl4{background:var(--ml);}
+/* ── PROFILE STYLES ── */
+.profile-field{
+  width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);
+  color:var(--text);font-family:var(--fb);font-size:13px;padding:10px 12px;
+}
+.profile-field:focus{outline:none;border-color:var(--ml);}
+/* ── STUDY LOG ── */
+.log-day{
+  display:flex;align-items:center;gap:12px;padding:9px 0;
+  border-bottom:1px solid var(--b1);font-size:12px;
+}
+.log-day:last-child{border-bottom:none;}
+.log-dot{width:8px;height:8px;border-radius:50%;background:var(--ml);flex-shrink:0;}
+
 /* flash animation for correct */
 @keyframes flash{0%{opacity:1;}50%{opacity:.5;}100%{opacity:1;}}
 </style>
@@ -462,6 +495,12 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
   <div class="sb-item" onclick="navMob('quiz')"><span class="sb-icon">&#10792;</span>Practice Quiz<span class="sb-ct">40 Qs</span></div>
   <div class="sb-item" onclick="navMob('behavioural')"><span class="sb-icon">&#10792;</span>Behavioural<span class="sb-ct">10 Qs</span></div>
   <div class="sb-item" onclick="navMob('sysdesign')"><span class="sb-icon">&#10792;</span>System Design</div>
+
+  <div class="sb-sec">Personal</div>
+  <div class="sb-item" onclick="navMob('profile')"><span class="sb-icon">&#9673;</span>Profile</div>
+  <div class="sb-item" onclick="navMob('analytics')"><span class="sb-icon">&#9636;</span>Analytics</div>
+  <div class="sb-item" onclick="navMob('notes')"><span class="sb-icon">&#9998;</span>My Notes</div>
+  <div class="sb-item" onclick="navMob('studylog')"><span class="sb-icon">&#9632;</span>Study Log</div>
   <div class="sb-progress">
     <div class="sp-label"><span>Overall progress</span><span id="mob-drawer-pct">0%</span></div>
     <div class="sp-bar"><div class="sp-fill" id="mob-drawer-fill" style="width:0%"></div></div>
@@ -538,6 +577,20 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
     <span class="sb-icon">◈</span>System Design
   </div>
 
+
+  <div class="sb-sec">Personal</div>
+  <div class="sb-item" onclick="nav('profile')">
+    <span class="sb-icon">&#9673;</span>Profile
+  </div>
+  <div class="sb-item" onclick="nav('analytics')">
+    <span class="sb-icon">&#9636;</span>Analytics
+  </div>
+  <div class="sb-item" onclick="nav('notes')">
+    <span class="sb-icon">&#9998;</span>My Notes
+  </div>
+  <div class="sb-item" onclick="nav('studylog')">
+    <span class="sb-icon">&#9632;</span>Study Log
+  </div>
   <div class="sb-progress">
     <div class="sp-label">
       <span>Overall progress</span>
@@ -716,6 +769,55 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
     <p>Framework, common patterns and 8 practice problems for ML and backend system design rounds.</p>
   </div>
   <div id="sd-content"></div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     PROFILE
+════════════════════════════════════════════ -->
+<div class="view" id="v-profile">
+  <div class="ph">
+    <div class="tag" style="color:var(--ml)">personal</div>
+    <h2>Your Profile</h2>
+    <p>Set your name, target role and prep start date. This personalises your dashboard.</p>
+  </div>
+  <div id="profile-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     ANALYTICS
+════════════════════════════════════════════ -->
+<div class="view" id="v-analytics">
+  <div class="ph">
+    <div class="tag" style="color:var(--dsa)">insights</div>
+    <h2>Analytics</h2>
+    <p>Your quiz performance, topic progress, study streak and activity heatmap.</p>
+  </div>
+  <div id="analytics-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     NOTES
+════════════════════════════════════════════ -->
+<div class="view" id="v-notes">
+  <div class="ph">
+    <div class="tag" style="color:var(--warn)">my notes</div>
+    <h2>Topic Notes</h2>
+    <p>Write your own notes for any topic. Saved automatically to your device database.</p>
+  </div>
+  <div id="notes-content"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     STUDY LOG
+════════════════════════════════════════════ -->
+<div class="view" id="v-studylog">
+  <div class="ph">
+    <div class="tag" style="color:var(--db)">activity</div>
+    <h2>Study Log</h2>
+    <p>Your daily study activity — every quiz attempt, topic completion and note saved.</p>
+  </div>
+  <div id="studylog-content"></div>
 </div>
 
 </main>
@@ -1808,9 +1910,9 @@ function navMob(id){
 }
 
 // Patch updateProgress to also update mobile UI
-const _origUp = updateProgress;
+var _baseUpdateProgress = updateProgress;
 window.updateProgress = function(){
-  _origUp();
+  _baseUpdateProgress();
   const pct = document.getElementById('sb-pct').textContent;
   const fill = document.getElementById('sb-fill').style.width;
   const pp = document.getElementById('mob-pct-pill');
@@ -1821,6 +1923,637 @@ window.updateProgress = function(){
   if(dp) dp.textContent = pct;
 };
 window.updateProgress();
+
+// ═══════════════════════════════════════════════════
+// DATABASE LAYER — IndexedDB (works offline, Android WebView)
+// ═══════════════════════════════════════════════════
+
+const DB_NAME = 'PrepTrackDB';
+const DB_VERSION = 1;
+let db = null;
+
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('profile')) {
+        d.createObjectStore('profile', { keyPath: 'id' });
+      }
+      if (!d.objectStoreNames.contains('quiz_history')) {
+        const qs = d.createObjectStore('quiz_history', { keyPath: 'id', autoIncrement: true });
+        qs.createIndex('date', 'date');
+        qs.createIndex('category', 'category');
+      }
+      if (!d.objectStoreNames.contains('notes')) {
+        d.createObjectStore('notes', { keyPath: 'topic_key' });
+      }
+      if (!d.objectStoreNames.contains('study_log')) {
+        const sl = d.createObjectStore('study_log', { keyPath: 'date' });
+      }
+      if (!d.objectStoreNames.contains('topic_progress')) {
+        d.createObjectStore('topic_progress', { keyPath: 'key' });
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbGet(store, key) {
+  return new Promise((resolve) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => resolve(null);
+  });
+}
+
+function dbPut(store, obj) {
+  return new Promise((resolve) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).put(obj);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => resolve(null);
+  });
+}
+
+function dbGetAll(store) {
+  return new Promise((resolve) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => resolve([]);
+  });
+}
+
+function dbDelete(store, key) {
+  return new Promise((resolve) => {
+    const tx = db.transaction(store, 'readwrite');
+    tx.objectStore(store).delete(key);
+    tx.oncomplete = () => resolve();
+  });
+}
+
+function dbGetAllByIndex(store, indexName, value) {
+  return new Promise((resolve) => {
+    const tx = db.transaction(store, 'readonly');
+    const idx = tx.objectStore(store).index(indexName);
+    const req = idx.getAll(value);
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => resolve([]);
+  });
+}
+
+// ── PROFILE ──────────────────────────────────────────────
+async function saveProfile(data) {
+  await dbPut('profile', { id: 'user', ...data });
+  renderProfileDisplay();
+}
+
+async function getProfile() {
+  return await dbGet('profile', 'user') || {
+    name: 'Anil', target: 'ML Engineer', company: '', startDate: '2025-03-20',
+    leetcode: 0, goal: 'ML Engineer & DB Engineer'
+  };
+}
+
+// ── QUIZ HISTORY ─────────────────────────────────────────
+async function saveQuizAttempt(qIdx, category, correct, difficulty) {
+  const today = new Date().toISOString().split('T')[0];
+  await dbPut('quiz_history', {
+    qIdx, category, correct, difficulty,
+    date: today, timestamp: Date.now()
+  });
+  logStudyDay(today, 'quiz');
+}
+
+async function getQuizHistory() {
+  return await dbGetAll('quiz_history');
+}
+
+// ── NOTES ────────────────────────────────────────────────
+async function saveNote(topicKey, noteText) {
+  await dbPut('notes', {
+    topic_key: topicKey,
+    text: noteText,
+    updated: new Date().toISOString()
+  });
+}
+
+async function getNote(topicKey) {
+  const n = await dbGet('notes', topicKey);
+  return n ? n.text : '';
+}
+
+async function getAllNotes() {
+  return await dbGetAll('notes');
+}
+
+// ── STUDY LOG ─────────────────────────────────────────────
+async function logStudyDay(date, activity) {
+  const existing = await dbGet('study_log', date) || { date, activities: [], minutes: 0 };
+  if (!existing.activities.includes(activity)) {
+    existing.activities.push(activity);
+  }
+  existing.minutes = (existing.minutes || 0) + 5;
+  existing.lastActive = Date.now();
+  await dbPut('study_log', existing);
+}
+
+async function getStudyLog() {
+  return await dbGetAll('study_log');
+}
+
+// ── ANALYTICS HELPERS ─────────────────────────────────────
+async function getAnalytics() {
+  const [history, log, notes] = await Promise.all([
+    getQuizHistory(), getStudyLog(), getAllNotes()
+  ]);
+  const catScores = {};
+  const dailyScores = {};
+  history.forEach(h => {
+    if (!catScores[h.category]) catScores[h.category] = { correct: 0, total: 0 };
+    catScores[h.category].total++;
+    if (h.correct) catScores[h.category].correct++;
+    if (!dailyScores[h.date]) dailyScores[h.date] = { correct: 0, total: 0 };
+    dailyScores[h.date].total++;
+    if (h.correct) dailyScores[h.date].correct++;
+  });
+  const totalQ = history.length;
+  const totalCorrect = history.filter(h => h.correct).length;
+  const streak = calcStreak(log);
+  return { catScores, dailyScores, totalQ, totalCorrect, streak, log, notes, history };
+}
+
+function calcStreak(log) {
+  const sorted = log.map(l => l.date).sort().reverse();
+  if (!sorted.length) return 0;
+  const today = new Date().toISOString().split('T')[0];
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  if (sorted[0] !== today && sorted[0] !== yesterday) return 0;
+  let streak = 1, i = 1;
+  while (i < sorted.length) {
+    const prev = new Date(sorted[i-1]);
+    const cur = new Date(sorted[i]);
+    const diff = (prev - cur) / 86400000;
+    if (Math.round(diff) === 1) { streak++; i++; } else break;
+  }
+  return streak;
+}
+
+// ── TOPIC PROGRESS SYNC WITH DB ───────────────────────────
+async function syncTopicToDB(key, done) {
+  if (done) {
+    await dbPut('topic_progress', { key, done: true, date: new Date().toISOString() });
+    const today = new Date().toISOString().split('T')[0];
+    logStudyDay(today, 'topics');
+  } else {
+    await dbDelete('topic_progress', key);
+  }
+}
+
+async function loadTopicProgressFromDB() {
+  const all = await dbGetAll('topic_progress');
+  all.forEach(t => { checked[t.key] = t.done; });
+}
+
+
+// ── OVERRIDE toggleCheck to also save to DB ────────────────
+function toggleCheck(key, track) {
+  checked[key] = !checked[key];
+  syncTopicToDB(key, checked[key]);
+  renderTopics(track);
+  updateProgress();
+}
+
+// ── OVERRIDE pickAnswer to also save to DB ─────────────────
+var _basePickAnswer = pickAnswer;
+pickAnswer = function(qIdx, chosen) {
+  _basePickAnswer(qIdx, chosen);
+  const q = QUIZ_QUESTIONS[qIdx];
+  saveQuizAttempt(qIdx, q.cat, chosen === q.ans, q.diff);
+};
+
+// ── NAV ADDITIONS ──────────────────────────────────────────
+// Store original nav as a variable (not const+function redecl which causes TDZ error)
+var _baseNav = nav;
+nav = function(id) {
+  _baseNav(id);
+  if (id === 'profile') renderProfile();
+  if (id === 'analytics') renderAnalytics();
+  if (id === 'notes') renderNotes();
+  if (id === 'studylog') renderStudyLog();
+};
+
+// ── PROFILE VIEW ───────────────────────────────────────────
+async function renderProfile() {
+  const p = await getProfile();
+  const cont = document.getElementById('profile-content');
+  cont.innerHTML = `
+    <div class="g2">
+      <div class="card">
+        <div style="font-family:var(--fh);font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;color:var(--ml2);">Personal Info</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <div style="font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:5px;">Your Name</div>
+            <input class="profile-field" id="pf-name" value="${p.name||''}" placeholder="e.g. Anil Kumar"/>
+          </div>
+          <div>
+            <div style="font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:5px;">Target Role</div>
+            <input class="profile-field" id="pf-goal" value="${p.goal||''}" placeholder="e.g. ML Engineer at Google"/>
+          </div>
+          <div>
+            <div style="font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:5px;">Target Company</div>
+            <input class="profile-field" id="pf-company" value="${p.company||''}" placeholder="e.g. Amazon, Flipkart, Swiggy"/>
+          </div>
+          <div>
+            <div style="font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:5px;">Prep Start Date</div>
+            <input class="profile-field" type="date" id="pf-start" value="${p.startDate||''}"/>
+          </div>
+          <div>
+            <div style="font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:5px;">LeetCode Problems Solved</div>
+            <input class="profile-field" type="number" id="pf-lc" value="${p.leetcode||0}" min="0"/>
+          </div>
+          <button class="btn btn-primary" onclick="submitProfile()" style="margin-top:4px;">Save Profile</button>
+          <div id="profile-saved" style="display:none;font-family:var(--fm);font-size:11px;color:var(--ok);letter-spacing:.06em;">Saved successfully ✓</div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px;">
+          <div style="font-family:var(--fh);font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;color:var(--db2);">Prep Summary</div>
+          <div id="profile-summary"></div>
+        </div>
+        <div class="card">
+          <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--warn);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;">Danger Zone</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Reset all progress, quiz history and notes. This cannot be undone.</p>
+          <button class="btn" style="border-color:var(--err);color:var(--err);" onclick="confirmReset()">Reset All Data</button>
+        </div>
+      </div>
+    </div>`;
+  renderProfileSummary(p);
+}
+
+async function renderProfileSummary(p) {
+  const analytics = await getAnalytics();
+  let totalDone = 0, totalAll = 0;
+  ['ml','db','cs','dsa'].forEach(t => { const c = countDone(t); totalDone += c.done; totalAll += c.total; });
+  const startDate = p.startDate ? new Date(p.startDate) : new Date();
+  const daysIn = Math.max(0, Math.floor((Date.now() - startDate) / 86400000));
+  const daysLeft = Math.max(0, 180 - daysIn);
+  const cont = document.getElementById('profile-summary');
+  if (!cont) return;
+  cont.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      ${[
+        ['Days in', daysIn, 'var(--ml)'],
+        ['Days left', daysLeft, 'var(--db)'],
+        ['Topics done', totalDone + '/' + totalAll, 'var(--ok)'],
+        ['Quiz attempts', analytics.totalQ, 'var(--dsa)'],
+        ['Quiz accuracy', analytics.totalQ ? Math.round(analytics.totalCorrect/analytics.totalQ*100)+'%' : '0%', 'var(--warn)'],
+        ['Study streak', analytics.streak + ' days', 'var(--beh)'],
+      ].map(([l,v,c]) => `<div style="background:var(--s2);border-radius:var(--r);padding:10px 12px;border:1px solid var(--b1);">
+        <div style="font-family:var(--fh);font-size:20px;font-weight:900;color:${c};">${v}</div>
+        <div style="font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:3px;">${l}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+async function submitProfile() {
+  const data = {
+    name: document.getElementById('pf-name').value,
+    goal: document.getElementById('pf-goal').value,
+    company: document.getElementById('pf-company').value,
+    startDate: document.getElementById('pf-start').value,
+    leetcode: parseInt(document.getElementById('pf-lc').value) || 0
+  };
+  await saveProfile(data);
+  const saved = document.getElementById('profile-saved');
+  saved.style.display = 'block';
+  setTimeout(() => saved.style.display = 'none', 2500);
+  // Update sidebar name
+  document.querySelector('.sb-head .name').textContent = (data.name || 'Anil') + ' · ML & DB Engineer';
+  renderProfileSummary(data);
+}
+
+async function confirmReset() {
+  if (!confirm('Reset ALL data? This deletes quiz history, notes, and topic progress.')) return;
+  const stores = ['profile','quiz_history','notes','study_log','topic_progress'];
+  for (const s of stores) {
+    const all = await dbGetAll(s);
+    for (const item of all) {
+      const key = item.id || item.topic_key || item.date || item.key || item.qIdx;
+      if (key !== undefined) await dbDelete(s, key);
+    }
+  }
+  checked = {};
+  localStorage.clear();
+  alert('All data reset. Reloading...');
+  location.reload();
+}
+
+function renderProfileDisplay() {
+  getProfile().then(p => {
+    const nameEl = document.querySelector('.sb-head .name');
+    if (nameEl && p.name) nameEl.textContent = p.name + ' · ML & DB Engineer';
+  });
+}
+
+// ── ANALYTICS VIEW ─────────────────────────────────────────
+async function renderAnalytics() {
+  const analytics = await getAnalytics();
+  const cont = document.getElementById('analytics-content');
+  let totalDone = 0, totalAll = 0;
+  ['ml','db','cs','dsa'].forEach(t => { const c = countDone(t); totalDone += c.done; totalAll += c.total; });
+  const overallPct = totalAll ? Math.round(totalDone/totalAll*100) : 0;
+  const quizPct = analytics.totalQ ? Math.round(analytics.totalCorrect/analytics.totalQ*100) : 0;
+
+  // Category performance bars
+  const catBars = Object.entries(analytics.catScores).map(([cat, s]) => {
+    const pct = s.total ? Math.round(s.correct/s.total*100) : 0;
+    const col = CAT_COLORS[cat] || 'var(--ml)';
+    return `<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+        <span style="color:${col};font-family:var(--fh);font-weight:700;text-transform:uppercase;letter-spacing:.06em;">${cat}</span>
+        <span style="color:var(--muted);font-family:var(--fm);">${s.correct}/${s.total} · ${pct}%</span>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${col};"></div></div>
+    </div>`;
+  }).join('') || '<p style="color:var(--muted);font-size:13px;">No quiz attempts yet. Take the quiz to see category scores.</p>';
+
+  // Daily score trend (last 14 days)
+  const last14 = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000).toISOString().split('T')[0];
+    const s = analytics.dailyScores[d];
+    last14.push({ date: d, pct: s ? Math.round(s.correct/s.total*100) : null, total: s ? s.total : 0 });
+  }
+  const maxH = 60;
+  const trendBars = last14.map(d => {
+    const h = d.pct !== null ? Math.max(4, Math.round(d.pct / 100 * maxH)) : 0;
+    const col = d.pct >= 80 ? 'var(--ok)' : d.pct >= 50 ? 'var(--warn)' : d.pct !== null ? 'var(--err)' : 'var(--s3)';
+    const label = d.date.slice(5);
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+      <div style="font-family:var(--fm);font-size:9px;color:var(--muted);">${d.pct !== null ? d.pct+'%' : ''}</div>
+      <div style="width:100%;max-width:24px;height:${h}px;background:${col};border-radius:2px;min-height:2px;"></div>
+      <div style="font-family:var(--fm);font-size:8px;color:var(--hint);">${label.replace('-','/')}</div>
+    </div>`;
+  }).join('');
+
+  // Heatmap (last 70 days = 10 weeks)
+  const heatmap = [];
+  for (let i = 69; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000).toISOString().split('T')[0];
+    const logEntry = analytics.log.find(l => l.date === d);
+    let lvl = 0;
+    if (logEntry) {
+      const acts = logEntry.activities.length;
+      lvl = acts >= 4 ? 4 : acts >= 3 ? 3 : acts >= 2 ? 2 : 1;
+    }
+    heatmap.push({ d, lvl });
+  }
+  const heatCells = heatmap.map(h =>
+    `<div class="heatmap-cell lvl${h.lvl}" title="${h.d}"></div>`
+  ).join('');
+
+  // Topic progress breakdown
+  const trackBreakdown = ['ml','db','cs','dsa'].map(t => {
+    const {done, total} = countDone(t);
+    const pct = total ? Math.round(done/total*100) : 0;
+    const colors = {ml:'var(--ml)',db:'var(--db)',cs:'var(--cs)',dsa:'var(--dsa)'};
+    const labels = {ml:'ML Engineer',db:'DB / Backend',cs:'CS Fundamentals',dsa:'DSA & Coding'};
+    return `<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+        <span style="color:${colors[t]};font-family:var(--fh);font-weight:700;text-transform:uppercase;letter-spacing:.06em;">${labels[t]}</span>
+        <span style="color:var(--muted);font-family:var(--fm);">${done}/${total} · ${pct}%</span>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${pct}%;background:${colors[t]};"></div></div>
+    </div>`;
+  }).join('');
+
+  cont.innerHTML = `
+    <!-- Stats row -->
+    <div class="g4" style="margin-bottom:16px;">
+      <div class="stat-card"><div class="stat-v" style="color:var(--ok);">${analytics.totalQ}</div><div class="stat-l">Quiz Attempts</div></div>
+      <div class="stat-card"><div class="stat-v" style="color:var(--ml);">${quizPct}%</div><div class="stat-l">Quiz Accuracy</div></div>
+      <div class="stat-card"><div class="stat-v" style="color:var(--db);">${overallPct}%</div><div class="stat-l">Topics Done</div></div>
+      <div class="stat-card"><div class="stat-v" style="color:var(--warn);">${analytics.streak}</div><div class="stat-l">Day Streak</div></div>
+    </div>
+
+    <div class="g2" style="margin-bottom:14px;">
+      <!-- Quiz accuracy by category -->
+      <div class="card">
+        <div style="font-family:var(--fh);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ml2);margin-bottom:14px;">Quiz accuracy by category</div>
+        ${catBars}
+      </div>
+      <!-- Topic progress -->
+      <div class="card">
+        <div style="font-family:var(--fh);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--db2);margin-bottom:14px;">Topic progress</div>
+        ${trackBreakdown}
+      </div>
+    </div>
+
+    <!-- Daily trend chart -->
+    <div class="card" style="margin-bottom:14px;">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--dsa2);margin-bottom:14px;">Daily quiz score — last 14 days</div>
+      <div style="display:flex;align-items:flex-end;gap:3px;height:${maxH+32}px;padding:0 4px;">
+        ${trendBars}
+      </div>
+    </div>
+
+    <!-- Activity heatmap -->
+    <div class="card">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--cs2);margin-bottom:12px;">Activity heatmap — last 70 days</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;">
+        ${heatCells}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;font-family:var(--fm);font-size:10px;color:var(--muted);">
+        <span>Less</span>
+        <div class="heatmap-cell"></div>
+        <div class="heatmap-cell lvl1"></div>
+        <div class="heatmap-cell lvl2"></div>
+        <div class="heatmap-cell lvl3"></div>
+        <div class="heatmap-cell lvl4"></div>
+        <span>More</span>
+      </div>
+    </div>`;
+}
+
+// ── NOTES VIEW ─────────────────────────────────────────────
+async function renderNotes() {
+  const allNotes = await getAllNotes();
+  const noteMap = {};
+  allNotes.forEach(n => { noteMap[n.topic_key] = n.text; });
+  
+  const cont = document.getElementById('notes-content');
+  
+  // Build topic list from all tracks
+  const allTopics = [];
+  ['ml','db','cs','dsa'].forEach(track => {
+    TOPICS[track].forEach(topic => {
+      allTopics.push({ track, topic });
+    });
+  });
+
+  const trackColors = {ml:'var(--ml)',db:'var(--db)',cs:'var(--cs)',dsa:'var(--dsa)'};
+  const trackBadges = {ml:'b-ml',db:'b-db',cs:'b-cs',dsa:'b-dsa'};
+
+  const noteCount = allNotes.length;
+  cont.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">${noteCount} note${noteCount!==1?'s':''} saved</div>
+      ${noteCount > 0 ? `<button class="btn" style="font-size:11px;" onclick="exportNotes()">Export notes</button>` : ''}
+    </div>
+    ${allTopics.map(({track, topic}) => {
+      const noteText = noteMap[topic.id] || '';
+      const hasNote = noteText.length > 0;
+      return `<div class="topic-card" style="margin-bottom:10px;">
+        <div class="tc-head" style="margin-bottom:10px;">
+          <span class="badge ${trackBadges[track]}">${topic.title}</span>
+          ${hasNote ? `<span style="margin-left:auto;font-family:var(--fm);font-size:9px;color:var(--ok);">● NOTES</span>` : ''}
+        </div>
+        <textarea class="note-area" id="note-${topic.id}" placeholder="Write your notes on ${topic.title}..."
+          onchange="saveNoteDebounced('${topic.id}', this.value)"
+          oninput="document.getElementById('ns-${topic.id}').style.display='none'"
+        >${noteText}</textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:6px;">
+          <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" 
+            onclick="saveNoteNow('${topic.id}')">Save note</button>
+          <span id="ns-${topic.id}" class="note-saved" style="display:none;margin-left:10px;align-self:center;">Saved ✓</span>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+const _noteTimers = {};
+function saveNoteDebounced(topicId, text) {
+  clearTimeout(_noteTimers[topicId]);
+  _noteTimers[topicId] = setTimeout(async () => {
+    await saveNote(topicId, text);
+    const el = document.getElementById('ns-' + topicId);
+    if (el) { el.style.display = 'inline'; setTimeout(() => el.style.display = 'none', 2000); }
+  }, 1500);
+}
+
+async function saveNoteNow(topicId) {
+  const el = document.getElementById('note-' + topicId);
+  if (!el) return;
+  await saveNote(topicId, el.value);
+  const saved = document.getElementById('ns-' + topicId);
+  if (saved) { saved.style.display = 'inline'; setTimeout(() => saved.style.display = 'none', 2500); }
+  if (currentView === 'notes') renderNotes();
+}
+
+async function exportNotes() {
+  const all = await getAllNotes();
+  if (!all.length) { alert('No notes to export.'); return; }
+  let text = 'PrepTrack — My Notes\n' + '='.repeat(50) + '\n\n';
+  all.forEach(n => {
+    const topicTitle = findTopicTitle(n.topic_key);
+    text += `## ${topicTitle}\n${n.text}\n\nUpdated: ${n.updated}\n\n` + '-'.repeat(40) + '\n\n';
+  });
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'preptrack_notes.txt'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function findTopicTitle(topicId) {
+  for (const track of ['ml','db','cs','dsa']) {
+    const found = TOPICS[track].find(t => t.id === topicId);
+    if (found) return found.title;
+  }
+  return topicId;
+}
+
+// ── STUDY LOG VIEW ─────────────────────────────────────────
+async function renderStudyLog() {
+  const log = await getStudyLog();
+  const history = await getQuizHistory();
+  const cont = document.getElementById('studylog-content');
+  
+  const sorted = [...log].sort((a,b) => b.date.localeCompare(a.date));
+  const today = new Date().toISOString().split('T')[0];
+  const totalDays = sorted.length;
+  const totalQuizzes = history.length;
+  let totalDone = 0; ['ml','db','cs','dsa'].forEach(t => totalDone += countDone(t).done);
+
+  cont.innerHTML = `
+    <div class="g3" style="margin-bottom:18px;">
+      <div class="stat-card"><div class="stat-v" style="color:var(--ml);">${totalDays}</div><div class="stat-l">Active Days</div></div>
+      <div class="stat-card"><div class="stat-v" style="color:var(--dsa);">${totalQuizzes}</div><div class="stat-l">Quiz Attempts</div></div>
+      <div class="stat-card"><div class="stat-v" style="color:var(--ok);">${totalDone}</div><div class="stat-l">Topics Completed</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--db2);margin-bottom:14px;">Activity feed</div>
+      ${sorted.length === 0 ?
+        '<p style="color:var(--muted);font-size:13px;">No activity yet. Start studying to see your log here.</p>' :
+        sorted.slice(0, 30).map(entry => {
+          const isToday = entry.date === today;
+          const dayQuizzes = history.filter(h => h.date === entry.date);
+          const correct = dayQuizzes.filter(h => h.correct).length;
+          const dateObj = new Date(entry.date + 'T00:00:00');
+          const dateStr = dateObj.toLocaleDateString('en-IN', { weekday:'short', month:'short', day:'numeric' });
+          return `<div class="log-day">
+            <div class="log-dot" style="${isToday ? 'background:var(--ok);' : ''}"></div>
+            <div style="flex:1;">
+              <div style="font-family:var(--fh);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;">
+                ${isToday ? 'Today' : dateStr}
+                ${isToday ? '<span style="font-size:9px;background:var(--ok);color:#000;padding:1px 6px;border-radius:2px;margin-left:6px;font-family:var(--fm);">TODAY</span>' : ''}
+              </div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--fb);">
+                ${entry.activities.includes('quiz') ? `${dayQuizzes.length} quiz attempt${dayQuizzes.length!==1?'s':''} · ${correct}/${dayQuizzes.length} correct` : ''}
+                ${entry.activities.includes('topics') ? (entry.activities.includes('quiz') ? ' · ' : '') + 'topics studied' : ''}
+                ${entry.activities.includes('notes') ? ' · notes written' : ''}
+              </div>
+            </div>
+            <div style="font-family:var(--fm);font-size:10px;color:var(--muted);">
+              ${entry.activities.length} activit${entry.activities.length!==1?'ies':'y'}
+            </div>
+          </div>`;
+        }).join('')
+      }
+    </div>
+
+    <div class="card">
+      <div style="font-family:var(--fh);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--cs2);margin-bottom:14px;">Quiz history</div>
+      ${history.length === 0 ?
+        '<p style="color:var(--muted);font-size:13px;">No quiz attempts yet.</p>' :
+        `<table class="tbl">
+          <thead><tr><th>Date</th><th>Category</th><th>Difficulty</th><th>Result</th></tr></thead>
+          <tbody>${[...history].reverse().slice(0, 50).map(h => `
+            <tr>
+              <td style="font-family:var(--fm);font-size:11px;">${h.date}</td>
+              <td><span class="badge" style="background:${CAT_BG[h.category]||'var(--s3)'};color:${CAT_COLORS[h.category]||'var(--muted)'};">${h.category}</span></td>
+              <td><span class="badge ${h.difficulty==='easy'?'b-easy':h.difficulty==='medium'?'b-med':'b-hard'}">${h.difficulty}</span></td>
+              <td style="font-family:var(--fh);font-weight:700;font-size:13px;color:${h.correct?'var(--ok)':'var(--err)'};">${h.correct?'✓ Correct':'✗ Wrong'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`
+      }
+    </div>`;
+}
+
+// ── MOBILE NAV MAP EXTENSION ───────────────────────────────
+Object.assign(MOB_NAV_MAP, {
+  'profile':'mnb-more','analytics':'mnb-more',
+  'notes':'mnb-more','studylog':'mnb-more'
+});
+
+// ── INIT: load DB first, then load profile + topic progress ──
+initDB().then(async () => {
+  await loadTopicProgressFromDB();
+  const p = await getProfile();
+  if (p && p.name) {
+    document.querySelector('.sb-head .name').textContent = p.name + ' · ML & DB Engineer';
+  }
+  window.updateProgress();
+}).catch(err => {
+  console.warn('IndexedDB init failed, falling back to localStorage:', err);
+});
+
 </script>
 </body>
 </html>
