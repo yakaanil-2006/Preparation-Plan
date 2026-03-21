@@ -423,6 +423,59 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
 .tbl tr:hover td{background:rgba(255,255,255,.02);}
 
 
+
+/* ── DAILY PLANNER ── */
+.day-card{
+  display:flex;align-items:flex-start;gap:12px;padding:12px 14px;
+  background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);
+  margin-bottom:8px;cursor:pointer;transition:all .15s;
+}
+.day-card:hover{border-color:var(--b2);background:var(--s3);}
+.day-card.today{border-color:var(--ml);background:var(--ml-bg);}
+.day-card.done{opacity:.6;}
+.day-card.done .dc-task{text-decoration:line-through;color:var(--hint);}
+.dc-num{
+  font-family:var(--fh);font-size:22px;font-weight:900;line-height:1;
+  min-width:36px;text-align:center;color:var(--muted);flex-shrink:0;
+}
+.day-card.today .dc-num{color:var(--ml2);}
+.day-card.done .dc-num{color:var(--hint);}
+.dc-body{flex:1;min-width:0;}
+.dc-task{font-family:var(--fb);font-size:13px;color:var(--text);line-height:1.5;}
+.dc-meta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;}
+.dc-check{
+  width:22px;height:22px;border:2px solid var(--b3);border-radius:4px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:900;transition:all .15s;color:transparent;
+  margin-top:2px;
+}
+.day-card.done .dc-check{background:var(--ok);border-color:var(--ok);color:#000;animation:pop .25s ease;}
+.dc-today-badge{
+  font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;padding:2px 8px;border-radius:2px;
+  background:var(--ml);color:#000;
+}
+.week-header{
+  font-family:var(--fh);font-size:12px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);
+  padding:14px 0 6px;border-bottom:1px solid var(--b1);margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.dp-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.dp-filter-btn{
+  padding:5px 13px;border:1px solid var(--b2);border-radius:3px;
+  background:transparent;color:var(--muted);
+  font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;cursor:pointer;transition:all .12s;
+}
+.dp-filter-btn.active{background:var(--ml-bg);border-color:var(--ml);color:var(--ml2);}
+.dp-search{
+  width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);
+  color:var(--text);font-family:var(--fb);font-size:13px;padding:9px 12px;
+  margin-bottom:12px;
+}
+.dp-search:focus{outline:none;border-color:var(--ml);}
+.dp-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
 /* ── NOTES STYLES ── */
 .note-area{
   width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);
@@ -531,6 +584,13 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
   <div class="sb-item" onclick="navMob('behavioural')"><span class="sb-icon">&#10792;</span>Behavioural<span class="sb-ct">10 Qs</span></div>
   <div class="sb-item" onclick="navMob('sysdesign')"><span class="sb-icon">&#10792;</span>System Design</div>
 
+  <div class="sb-sec">Daily Plan</div>
+  <div class="sb-item" onclick="nav('daily')">
+    <span class="sb-icon">&#9776;</span>Daily Targets
+    <span class="sb-ct">180 days</span>
+  </div>
+  <div class="sb-sec">Daily Plan</div>
+  <div class="sb-item" onclick="navMob('daily')"><span class="sb-icon">&#9776;</span>Daily Targets<span class="sb-ct">180</span></div>
   <div class="sb-sec">Personal</div>
   <div class="sb-item" onclick="navMob('profile')"><span class="sb-icon">&#9673;</span>Profile</div>
   <div class="sb-item" onclick="navMob('analytics')"><span class="sb-icon">&#9636;</span>Analytics</div>
@@ -613,6 +673,11 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
   </div>
 
 
+  <div class="sb-sec">Daily Plan</div>
+  <div class="sb-item" onclick="nav('daily')">
+    <span class="sb-icon">&#9776;</span>Daily Targets
+    <span class="sb-ct">180 days</span>
+  </div>
   <div class="sb-sec">Personal</div>
   <div class="sb-item" onclick="nav('profile')">
     <span class="sb-icon">&#9673;</span>Profile
@@ -807,6 +872,18 @@ body::after{content:'';position:fixed;top:-10%;left:30%;width:40%;height:50%;z-i
 </div>
 
 
+
+<!-- ════════════════════════════════════════════
+     DAILY TARGETS
+════════════════════════════════════════════ -->
+<div class="view" id="v-daily">
+  <div class="ph">
+    <div class="tag" style="color:var(--warn)">day-by-day</div>
+    <h2>Daily Targets — 6 Month Plan</h2>
+    <p>180 days of structured daily tasks. Tap any day to mark it done. Your streak grows as you go.</p>
+  </div>
+  <div id="daily-content"></div>
+</div>
 <!-- ════════════════════════════════════════════
      PROFILE
 ════════════════════════════════════════════ -->
@@ -2220,6 +2297,7 @@ nav = function(id) {
   if (id === 'analytics') renderAnalytics();
   if (id === 'notes') renderNotes();
   if (id === 'studylog') renderStudyLog();
+  if (id === 'daily') renderDaily();
 };
 
 // ── PROFILE VIEW ───────────────────────────────────────────
@@ -2614,6 +2692,7 @@ async function renderStudyLog() {
 
 // ── MOBILE NAV MAP EXTENSION ───────────────────────────────
 Object.assign(MOB_NAV_MAP, {
+  'daily':'mnb-more',
   'profile':'mnb-more','analytics':'mnb-more',
   'notes':'mnb-more','studylog':'mnb-more'
 });
@@ -2629,6 +2708,188 @@ initDB().then(async () => {
 }).catch(err => {
   console.warn('IndexedDB init failed, falling back to localStorage:', err);
 });
+
+// ═══════════════════════════════════════════════════
+// DAILY TARGETS — 180-day planner
+// ═══════════════════════════════════════════════════
+const DAILY_TARGETS = [{"day": 1, "month": 1, "week": 1, "task": "Python OOP: classes, objects, inheritance, polymorphism", "tag": "python", "diff": "easy"}, {"day": 2, "month": 1, "week": 1, "task": "Python: generators, iterators, decorators, context managers", "tag": "python", "diff": "easy"}, {"day": 3, "month": 1, "week": 1, "task": "Python: list/dict/set comprehensions, lambda, map/filter", "tag": "python", "diff": "easy"}, {"day": 4, "month": 1, "week": 1, "task": "Linear algebra: vectors, dot product, matrix multiplication", "tag": "math", "diff": "easy"}, {"day": 5, "month": 1, "week": 1, "task": "Linear algebra: eigenvalues, eigenvectors, SVD basics", "tag": "math", "diff": "medium"}, {"day": 6, "month": 1, "week": 1, "task": "Calculus: derivatives, chain rule, partial derivatives", "tag": "math", "diff": "easy"}, {"day": 7, "month": 1, "week": 1, "task": "Probability: Bayes theorem, conditional probability, distributions", "tag": "math", "diff": "medium"}, {"day": 8, "month": 1, "week": 2, "task": "Statistics: mean, variance, std dev, hypothesis testing", "tag": "math", "diff": "easy"}, {"day": 9, "month": 1, "week": 2, "task": "SQL: SELECT, WHERE, ORDER BY, LIMIT — write 10 queries", "tag": "sql", "diff": "easy"}, {"day": 10, "month": 1, "week": 2, "task": "SQL: GROUP BY, HAVING, aggregate functions (COUNT, SUM, AVG)", "tag": "sql", "diff": "easy"}, {"day": 11, "month": 1, "week": 2, "task": "SQL: INNER JOIN, LEFT JOIN — write 8 join queries from scratch", "tag": "sql", "diff": "easy"}, {"day": 12, "month": 1, "week": 2, "task": "SQL: RIGHT JOIN, FULL OUTER JOIN, CROSS JOIN, self-join", "tag": "sql", "diff": "easy"}, {"day": 13, "month": 1, "week": 2, "task": "SQL: Subqueries, correlated subqueries, EXISTS / NOT EXISTS", "tag": "sql", "diff": "medium"}, {"day": 14, "month": 1, "week": 2, "task": "SQL: CASE WHEN, COALESCE, NULLIF, string functions", "tag": "sql", "diff": "easy"}, {"day": 15, "month": 1, "week": 3, "task": "DSA: Big O notation — time & space complexity analysis", "tag": "dsa", "diff": "easy"}, {"day": 16, "month": 1, "week": 3, "task": "DSA: Arrays — two pointer technique, 5 LeetCode easy problems", "tag": "dsa", "diff": "easy"}, {"day": 17, "month": 1, "week": 3, "task": "DSA: Strings — sliding window, 5 LeetCode easy problems", "tag": "dsa", "diff": "easy"}, {"day": 18, "month": 1, "week": 3, "task": "DSA: Hash maps & sets — frequency counting, 5 problems", "tag": "dsa", "diff": "easy"}, {"day": 19, "month": 1, "week": 3, "task": "DSA: Linked lists — reversal, cycle detection (Floyd's algorithm)", "tag": "dsa", "diff": "medium"}, {"day": 20, "month": 1, "week": 3, "task": "DSA: Stacks & queues — implementation, monotonic stack", "tag": "dsa", "diff": "medium"}, {"day": 21, "month": 1, "week": 3, "task": "Python: File I/O, exception handling, modules, virtual environments", "tag": "python", "diff": "easy"}, {"day": 22, "month": 1, "week": 4, "task": "OS: Processes vs threads, context switching, PCB", "tag": "os", "diff": "easy"}, {"day": 23, "month": 1, "week": 4, "task": "OS: CPU scheduling — FCFS, SJF, Round Robin, Priority", "tag": "os", "diff": "medium"}, {"day": 24, "month": 1, "week": 4, "task": "OS: Memory management — paging, segmentation, page tables", "tag": "os", "diff": "medium"}, {"day": 25, "month": 1, "week": 4, "task": "OS: Virtual memory — page faults, swapping, thrashing", "tag": "os", "diff": "medium"}, {"day": 26, "month": 1, "week": 4, "task": "OS: Deadlocks — 4 conditions, prevention, Banker's algorithm", "tag": "os", "diff": "medium"}, {"day": 27, "month": 1, "week": 4, "task": "SQL: Practice — write 10 complex queries using JOINs + aggregates", "tag": "sql", "diff": "medium"}, {"day": 28, "month": 1, "week": 4, "task": "DSA: Binary search — on sorted array, on answer space, 5 problems", "tag": "dsa", "diff": "medium"}, {"day": 29, "month": 1, "week": 5, "task": "Week 1-4 revision + solve 5 mixed LeetCode easy problems", "tag": "revision", "diff": "easy"}, {"day": 30, "month": 1, "week": 5, "task": "Month 1 assessment — quiz all SQL + OS + DSA topics covered", "tag": "revision", "diff": "medium"}, {"day": 31, "month": 2, "week": 5, "task": "ML: Linear regression — cost function, gradient descent derivation", "tag": "ml", "diff": "medium"}, {"day": 32, "month": 2, "week": 5, "task": "ML: Logistic regression — sigmoid, log loss, implement from scratch", "tag": "ml", "diff": "medium"}, {"day": 33, "month": 2, "week": 5, "task": "ML: Decision trees — Gini impurity, information gain, depth", "tag": "ml", "diff": "medium"}, {"day": 34, "month": 2, "week": 5, "task": "ML: Random forests — bagging, feature importance, OOB error", "tag": "ml", "diff": "medium"}, {"day": 35, "month": 2, "week": 5, "task": "ML: Gradient boosting — XGBoost, LightGBM, AdaBoost intuition", "tag": "ml", "diff": "hard"}, {"day": 36, "month": 2, "week": 5, "task": "ML: SVM — margin maximisation, kernel trick (RBF, polynomial)", "tag": "ml", "diff": "hard"}, {"day": 37, "month": 2, "week": 5, "task": "ML: KNN, Naive Bayes — when to use, assumptions, limitations", "tag": "ml", "diff": "easy"}, {"day": 38, "month": 2, "week": 6, "task": "ML: Bias-variance tradeoff — overfitting vs underfitting detection", "tag": "ml", "diff": "medium"}, {"day": 39, "month": 2, "week": 6, "task": "ML: Confusion matrix, precision, recall, F1 — compute by hand", "tag": "ml", "diff": "easy"}, {"day": 40, "month": 2, "week": 6, "task": "ML: AUC-ROC curve — what it measures, class imbalance handling", "tag": "ml", "diff": "medium"}, {"day": 41, "month": 2, "week": 6, "task": "ML: Cross-validation — k-fold, stratified, LOOCV", "tag": "ml", "diff": "medium"}, {"day": 42, "month": 2, "week": 6, "task": "ML: Hyperparameter tuning — GridSearch, RandomSearch, Optuna", "tag": "ml", "diff": "medium"}, {"day": 43, "month": 2, "week": 6, "task": "ML: Class imbalance — SMOTE, class_weight, threshold tuning", "tag": "ml", "diff": "medium"}, {"day": 44, "month": 2, "week": 6, "task": "SQL: Window functions — ROW_NUMBER, RANK, DENSE_RANK, NTILE", "tag": "sql", "diff": "medium"}, {"day": 45, "month": 2, "week": 7, "task": "SQL: LAG, LEAD, FIRST_VALUE, LAST_VALUE — 8 practice problems", "tag": "sql", "diff": "medium"}, {"day": 46, "month": 2, "week": 7, "task": "SQL: CTEs (WITH clause) — write 5 multi-step CTE queries", "tag": "sql", "diff": "medium"}, {"day": 47, "month": 2, "week": 7, "task": "SQL: EXPLAIN — read execution plans, identify slow queries", "tag": "sql", "diff": "medium"}, {"day": 48, "month": 2, "week": 7, "task": "SQL: Indexing — clustered vs non-clustered, composite, covering", "tag": "sql", "diff": "medium"}, {"day": 49, "month": 2, "week": 7, "task": "Networks: OSI model — 7 layers, role of each, protocols per layer", "tag": "networks", "diff": "medium"}, {"day": 50, "month": 2, "week": 7, "task": "Networks: TCP vs UDP — differences, 3-way handshake, use cases", "tag": "networks", "diff": "medium"}, {"day": 51, "month": 2, "week": 7, "task": "Networks: DNS resolution — root → TLD → authoritative flow", "tag": "networks", "diff": "easy"}, {"day": 52, "month": 2, "week": 8, "task": "Networks: HTTP/HTTPS, TLS handshake, status codes, REST basics", "tag": "networks", "diff": "medium"}, {"day": 53, "month": 2, "week": 8, "task": "Networks: IP addressing, subnetting, CIDR, proxy vs reverse proxy", "tag": "networks", "diff": "medium"}, {"day": 54, "month": 2, "week": 8, "task": "DSA: Trees — BST, inorder/preorder/postorder, height, 5 problems", "tag": "dsa", "diff": "medium"}, {"day": 55, "month": 2, "week": 8, "task": "DSA: Heap / Priority queue — min-heap, max-heap, heapify", "tag": "dsa", "diff": "medium"}, {"day": 56, "month": 2, "week": 8, "task": "DSA: Sorting — merge sort, quick sort — implement from scratch", "tag": "dsa", "diff": "medium"}, {"day": 57, "month": 2, "week": 8, "task": "ML: Feature engineering — encoding, scaling, imputation practice", "tag": "ml", "diff": "medium"}, {"day": 58, "month": 2, "week": 8, "task": "SQL: Practice — 5 hard window function problems on StrataScratch", "tag": "sql", "diff": "hard"}, {"day": 59, "month": 2, "week": 9, "task": "Week 5-8 revision + 5 LeetCode medium problems (arrays/trees)", "tag": "revision", "diff": "medium"}, {"day": 60, "month": 2, "week": 9, "task": "Month 2 assessment — ML theory quiz + write 3 SQL queries from scratch", "tag": "revision", "diff": "medium"}, {"day": 61, "month": 3, "week": 9, "task": "DL: Neural network architecture — forward pass, activation functions", "tag": "dl", "diff": "medium"}, {"day": 62, "month": 3, "week": 9, "task": "DL: Backpropagation — chain rule applied, gradient flow derivation", "tag": "dl", "diff": "hard"}, {"day": 63, "month": 3, "week": 9, "task": "DL: Loss functions — cross-entropy, MSE, focal loss, when to use each", "tag": "dl", "diff": "medium"}, {"day": 64, "month": 3, "week": 9, "task": "DL: Optimisers — SGD, Adam, RMSProp, learning rate scheduling", "tag": "dl", "diff": "medium"}, {"day": 65, "month": 3, "week": 9, "task": "DL: Batch normalisation, dropout, weight initialisation (Xavier, He)", "tag": "dl", "diff": "medium"}, {"day": 66, "month": 3, "week": 9, "task": "DL: CNNs — convolution operation, pooling, stride, receptive field", "tag": "dl", "diff": "medium"}, {"day": 67, "month": 3, "week": 9, "task": "DL: CNN architectures — VGG, ResNet, InceptionV3 (your project!)", "tag": "dl", "diff": "hard"}, {"day": 68, "month": 3, "week": 10, "task": "DL: RNNs — vanishing gradient, BPTT, when RNNs fail", "tag": "dl", "diff": "medium"}, {"day": 69, "month": 3, "week": 10, "task": "DL: LSTMs — cell state, forget/input/output gates — draw the diagram", "tag": "dl", "diff": "hard"}, {"day": 70, "month": 3, "week": 10, "task": "DL: Transformers — self-attention Q/K/V math, compute by hand", "tag": "dl", "diff": "hard"}, {"day": 71, "month": 3, "week": 10, "task": "DL: Multi-head attention, positional encoding, BERT vs GPT", "tag": "dl", "diff": "hard"}, {"day": 72, "month": 3, "week": 10, "task": "DL: Implement attention layer from scratch in PyTorch", "tag": "dl", "diff": "hard"}, {"day": 73, "month": 3, "week": 10, "task": "DL: Your image captioning project — review full pipeline end-to-end", "tag": "dl", "diff": "medium"}, {"day": 74, "month": 3, "week": 10, "task": "DL: Regularisation — L1/L2, dropout, early stopping, LR scheduling", "tag": "dl", "diff": "medium"}, {"day": 75, "month": 3, "week": 11, "task": "DB: Normalisation — 1NF, 2NF, 3NF, BCNF — examples for each", "tag": "db", "diff": "medium"}, {"day": 76, "month": 3, "week": 11, "task": "DB: ERD design — design schema for an e-commerce system from scratch", "tag": "db", "diff": "medium"}, {"day": 77, "month": 3, "week": 11, "task": "DB: Primary keys, foreign keys, unique, check, NOT NULL constraints", "tag": "db", "diff": "easy"}, {"day": 78, "month": 3, "week": 11, "task": "DB: B-Tree vs Hash indexes — internal structure, when each is used", "tag": "db", "diff": "hard"}, {"day": 79, "month": 3, "week": 11, "task": "DB: Isolation levels — READ UNCOMMITTED to SERIALIZABLE, dirty reads", "tag": "db", "diff": "hard"}, {"day": 80, "month": 3, "week": 11, "task": "DB: ACID transactions — atomicity, consistency, isolation, durability", "tag": "db", "diff": "medium"}, {"day": 81, "month": 3, "week": 11, "task": "DB: WAL (Write-Ahead Logging), crash recovery, MVCC in PostgreSQL", "tag": "db", "diff": "hard"}, {"day": 82, "month": 3, "week": 12, "task": "OS: Race conditions, critical sections, mutex vs semaphore", "tag": "os", "diff": "medium"}, {"day": 83, "month": 3, "week": 12, "task": "OS: Monitors, condition variables, wait() and signal()", "tag": "os", "diff": "medium"}, {"day": 84, "month": 3, "week": 12, "task": "OS: Producer-consumer, readers-writers, dining philosophers", "tag": "os", "diff": "hard"}, {"day": 85, "month": 3, "week": 12, "task": "DSA: Graphs — BFS, DFS — implement both, 5 problems", "tag": "dsa", "diff": "medium"}, {"day": 86, "month": 3, "week": 12, "task": "DSA: Graph algorithms — topological sort, cycle detection", "tag": "dsa", "diff": "medium"}, {"day": 87, "month": 3, "week": 12, "task": "DB: Design schema for a social media app — normalised + indexed", "tag": "db", "diff": "hard"}, {"day": 88, "month": 3, "week": 12, "task": "DL: PyTorch practice — custom dataset, DataLoader, training loop", "tag": "dl", "diff": "medium"}, {"day": 89, "month": 3, "week": 13, "task": "Week 9-12 revision + 5 LeetCode medium (graphs/trees)", "tag": "revision", "diff": "medium"}, {"day": 90, "month": 3, "week": 13, "task": "Month 3 assessment — explain transformer attention on paper + DB schema", "tag": "revision", "diff": "hard"}, {"day": 91, "month": 4, "week": 13, "task": "MLOps: Build a FastAPI endpoint to serve your image captioning model", "tag": "mlops", "diff": "medium"}, {"day": 92, "month": 4, "week": 13, "task": "MLOps: Docker — write Dockerfile for ML model, build + run container", "tag": "mlops", "diff": "medium"}, {"day": 93, "month": 4, "week": 13, "task": "MLOps: Docker Compose — multi-container setup (app + model server)", "tag": "mlops", "diff": "medium"}, {"day": 94, "month": 4, "week": 13, "task": "MLOps: GitHub Actions — write CI/CD pipeline for ML project", "tag": "mlops", "diff": "medium"}, {"day": 95, "month": 4, "week": 13, "task": "MLOps: MLflow — log experiments, params, metrics, model registry", "tag": "mlops", "diff": "medium"}, {"day": 96, "month": 4, "week": 13, "task": "MLOps: Model monitoring — data drift detection with Evidently", "tag": "mlops", "diff": "medium"}, {"day": 97, "month": 4, "week": 13, "task": "MLOps: Feature stores — Feast concepts, online vs offline store", "tag": "mlops", "diff": "hard"}, {"day": 98, "month": 4, "week": 14, "task": "Data Eng: ETL vs ELT — differences, when to use each, real examples", "tag": "dataeng", "diff": "medium"}, {"day": 99, "month": 4, "week": 14, "task": "Data Eng: Apache Airflow — DAGs, operators, write your first DAG", "tag": "dataeng", "diff": "medium"}, {"day": 100, "month": 4, "week": 14, "task": "Data Eng: Apache Spark — RDDs, DataFrames, transformations vs actions", "tag": "dataeng", "diff": "hard"}, {"day": 101, "month": 4, "week": 14, "task": "Data Eng: Kafka basics — topics, partitions, producers, consumers", "tag": "dataeng", "diff": "hard"}, {"day": 102, "month": 4, "week": 14, "task": "Data Eng: dbt — models, tests, documentation, run first dbt project", "tag": "dataeng", "diff": "medium"}, {"day": 103, "month": 4, "week": 14, "task": "DB: NoSQL — MongoDB (document), Redis (key-value), Cassandra (columnar)", "tag": "db", "diff": "medium"}, {"day": 104, "month": 4, "week": 14, "task": "DB: CAP theorem — CP vs AP, real examples (HBase vs Cassandra)", "tag": "db", "diff": "hard"}, {"day": 105, "month": 4, "week": 15, "task": "System Design: Horizontal vs vertical scaling, load balancers", "tag": "sysdesign", "diff": "medium"}, {"day": 106, "month": 4, "week": 15, "task": "System Design: Caching — Redis, cache-aside, write-through, TTL, eviction", "tag": "sysdesign", "diff": "medium"}, {"day": 107, "month": 4, "week": 15, "task": "System Design: Message queues — Kafka vs RabbitMQ, pub/sub pattern", "tag": "sysdesign", "diff": "medium"}, {"day": 108, "month": 4, "week": 15, "task": "System Design: Design a URL shortener — full walkthrough", "tag": "sysdesign", "diff": "medium"}, {"day": 109, "month": 4, "week": 15, "task": "System Design: Design a notification system — full walkthrough", "tag": "sysdesign", "diff": "medium"}, {"day": 110, "month": 4, "week": 15, "task": "System Design: CDN, consistent hashing, distributed caching", "tag": "sysdesign", "diff": "hard"}, {"day": 111, "month": 4, "week": 15, "task": "System Design: Rate limiting — token bucket, sliding window in Redis", "tag": "sysdesign", "diff": "hard"}, {"day": 112, "month": 4, "week": 16, "task": "OS: File systems — inodes, blocks, HDD vs SSD vs NVMe latency", "tag": "os", "diff": "medium"}, {"day": 113, "month": 4, "week": 16, "task": "OS: RAID levels 0/1/5/10 — trade-offs, object vs block vs file storage", "tag": "os", "diff": "medium"}, {"day": 114, "month": 4, "week": 16, "task": "DSA: Dynamic programming — 1D DP: coin change, climbing stairs", "tag": "dsa", "diff": "hard"}, {"day": 115, "month": 4, "week": 16, "task": "DSA: DP — 2D: LCS, edit distance, 0/1 knapsack — solve all 3", "tag": "dsa", "diff": "hard"}, {"day": 116, "month": 4, "week": 16, "task": "DB: Sharding — horizontal partitioning, shard keys, consistent hashing", "tag": "db", "diff": "hard"}, {"day": 117, "month": 4, "week": 16, "task": "DB: Replication — master-slave, quorum reads/writes, eventual consistency", "tag": "db", "diff": "hard"}, {"day": 118, "month": 4, "week": 16, "task": "MLOps: Deploy captioning model as Docker + FastAPI — test with Postman", "tag": "mlops", "diff": "hard"}, {"day": 119, "month": 4, "week": 17, "task": "Week 13-16 revision + 5 LeetCode hard problems", "tag": "revision", "diff": "hard"}, {"day": 120, "month": 4, "week": 17, "task": "Month 4 assessment — system design URL shortener in 20 mins + Docker demo", "tag": "revision", "diff": "hard"}, {"day": 121, "month": 5, "week": 17, "task": "GenAI: Fine-tuning LLMs — full fine-tune vs LoRA vs QLoRA vs PEFT", "tag": "genai", "diff": "hard"}, {"day": 122, "month": 5, "week": 17, "task": "GenAI: RAG — chunking strategies, embeddings, vector DB retrieval", "tag": "genai", "diff": "hard"}, {"day": 123, "month": 5, "week": 17, "task": "GenAI: FAISS — install, index documents, similarity search", "tag": "genai", "diff": "medium"}, {"day": 124, "month": 5, "week": 17, "task": "GenAI: LangChain — chains, prompts, memory, build simple QA bot", "tag": "genai", "diff": "medium"}, {"day": 125, "month": 5, "week": 17, "task": "GenAI: LangGraph — agents, tool use, multi-step reasoning", "tag": "genai", "diff": "hard"}, {"day": 126, "month": 5, "week": 17, "task": "GenAI: Prompt engineering — few-shot, chain-of-thought, ReAct", "tag": "genai", "diff": "medium"}, {"day": 127, "month": 5, "week": 17, "task": "GenAI: Evaluation — BLEU, ROUGE, RAGAS for RAG pipelines", "tag": "genai", "diff": "medium"}, {"day": 128, "month": 5, "week": 18, "task": "Project: Build RAG chatbot on PDF knowledge base using LangChain+FAISS", "tag": "project", "diff": "hard"}, {"day": 129, "month": 5, "week": 18, "task": "Project: Deploy RAG chatbot to HuggingFace Spaces — write README", "tag": "project", "diff": "hard"}, {"day": 130, "month": 5, "week": 18, "task": "Project: Write SQL analytics dashboard — 5 complex queries on real dataset", "tag": "project", "diff": "hard"}, {"day": 131, "month": 5, "week": 18, "task": "Project: Refactor image captioning project — clean code, add BLEU eval", "tag": "project", "diff": "medium"}, {"day": 132, "month": 5, "week": 18, "task": "Project: Write GitHub READMEs for all 3 projects — architecture diagrams", "tag": "project", "diff": "medium"}, {"day": 133, "month": 5, "week": 18, "task": "Project: Write Medium/Hashnode blog post about image captioning project", "tag": "project", "diff": "medium"}, {"day": 134, "month": 5, "week": 18, "task": "Project: LinkedIn post about RAG chatbot — share link, update profile", "tag": "project", "diff": "easy"}, {"day": 135, "month": 5, "week": 19, "task": "CS Arch: CPU cache hierarchy — L1/L2/L3, cache miss implications", "tag": "cs_arch", "diff": "medium"}, {"day": 136, "month": 5, "week": 19, "task": "CS Arch: CPU pipelining — stages, hazards, branch prediction", "tag": "cs_arch", "diff": "hard"}, {"day": 137, "month": 5, "week": 19, "task": "CS Arch: CISC vs RISC — x86 vs ARM, why ARM dominates mobile", "tag": "cs_arch", "diff": "medium"}, {"day": 138, "month": 5, "week": 19, "task": "CS Arch: GPU architecture — SIMD, CUDA cores, why GPUs dominate ML", "tag": "cs_arch", "diff": "medium"}, {"day": 139, "month": 5, "week": 19, "task": "CS Arch: Memory hierarchy — registers→cache→RAM→disk latency numbers", "tag": "cs_arch", "diff": "medium"}, {"day": 140, "month": 5, "week": 19, "task": "Networks: WebSockets vs HTTP long-polling vs SSE — real use cases", "tag": "networks", "diff": "medium"}, {"day": 141, "month": 5, "week": 19, "task": "Networks: Load balancing algorithms — implement round-robin in code", "tag": "networks", "diff": "medium"}, {"day": 142, "month": 5, "week": 20, "task": "DSA: Graph — Dijkstra's, Bellman-Ford, when each applies", "tag": "dsa", "diff": "hard"}, {"day": 143, "month": 5, "week": 20, "task": "DSA: Union-Find (Disjoint Set) — implement with path compression", "tag": "dsa", "diff": "hard"}, {"day": 144, "month": 5, "week": 20, "task": "DSA: DP on strings — palindrome partitioning, regex matching", "tag": "dsa", "diff": "hard"}, {"day": 145, "month": 5, "week": 20, "task": "DSA: DP on trees — diameter, max path sum, tree DP patterns", "tag": "dsa", "diff": "hard"}, {"day": 146, "month": 5, "week": 20, "task": "System Design: Design Uber / ride-sharing — full walkthrough", "tag": "sysdesign", "diff": "hard"}, {"day": 147, "month": 5, "week": 20, "task": "System Design: Design a recommendation system — ML system design", "tag": "sysdesign", "diff": "hard"}, {"day": 148, "month": 5, "week": 20, "task": "System Design: Design Google Search — indexing, ranking, serving", "tag": "sysdesign", "diff": "hard"}, {"day": 149, "month": 5, "week": 21, "task": "Week 17-20 revision + 5 LeetCode hard problems (DP + graphs)", "tag": "revision", "diff": "hard"}, {"day": 150, "month": 5, "week": 21, "task": "Month 5 assessment — demo all 3 projects + explain RAG architecture", "tag": "revision", "diff": "hard"}, {"day": 151, "month": 6, "week": 21, "task": "Mock interview 1: DSA round — 2 medium problems in 45 minutes", "tag": "interview", "diff": "hard"}, {"day": 152, "month": 6, "week": 21, "task": "Mock interview 2: ML theory round — bias-variance, transformers, LSTM", "tag": "interview", "diff": "hard"}, {"day": 153, "month": 6, "week": 21, "task": "Mock interview 3: SQL round — write 3 queries including window functions", "tag": "interview", "diff": "hard"}, {"day": 154, "month": 6, "week": 21, "task": "Behavioural: Write STAR stories for all 10 common questions", "tag": "behavioural", "diff": "medium"}, {"day": 155, "month": 6, "week": 21, "task": "Resume: Write 1-page metrics-driven resume — quantify every bullet", "tag": "career", "diff": "medium"}, {"day": 156, "month": 6, "week": 21, "task": "LinkedIn: Optimise profile — headline, about, skills, featured projects", "tag": "career", "diff": "easy"}, {"day": 157, "month": 6, "week": 21, "task": "DSA: LeetCode contest — attempt 4 problems, note weak areas", "tag": "dsa", "diff": "hard"}, {"day": 158, "month": 6, "week": 22, "task": "Research 5 target companies — tech stack, ML infra, recent engineering blogs", "tag": "career", "diff": "medium"}, {"day": 159, "month": 6, "week": 22, "task": "Apply to 10 companies on LinkedIn + Naukri with tailored resume", "tag": "career", "diff": "medium"}, {"day": 160, "month": 6, "week": 22, "task": "Mock interview 4: System design — design WhatsApp in 45 minutes", "tag": "interview", "diff": "hard"}, {"day": 161, "month": 6, "week": 22, "task": "Revise weak areas from mock interviews — study Anki flashcards", "tag": "revision", "diff": "medium"}, {"day": 162, "month": 6, "week": 22, "task": "DSA: 5 problems on weakest topic (review analytics page)", "tag": "dsa", "diff": "hard"}, {"day": 163, "month": 6, "week": 22, "task": "ML: Revise transformers, RAG, MLOps — explain each in 2 minutes", "tag": "revision", "diff": "hard"}, {"day": 164, "month": 6, "week": 22, "task": "Apply to 10 more companies — track all applications in spreadsheet", "tag": "career", "diff": "medium"}, {"day": 165, "month": 6, "week": 23, "task": "Mock interview 5: Full loop — DSA + ML + System Design back-to-back", "tag": "interview", "diff": "hard"}, {"day": 166, "month": 6, "week": 23, "task": "SQL: Solve 5 LeetCode hard SQL problems", "tag": "sql", "diff": "hard"}, {"day": 167, "month": 6, "week": 23, "task": "System Design: Design Netflix — video streaming at scale", "tag": "sysdesign", "diff": "hard"}, {"day": 168, "month": 6, "week": 23, "task": "System Design: Design a feature store for ML — ML system design", "tag": "sysdesign", "diff": "hard"}, {"day": 169, "month": 6, "week": 23, "task": "DSA: 5 problems — sliding window + two pointer patterns", "tag": "dsa", "diff": "medium"}, {"day": 170, "month": 6, "week": 23, "task": "Behavioural: Practice 'tell me about yourself' — time to 90 seconds", "tag": "behavioural", "diff": "easy"}, {"day": 171, "month": 6, "week": 23, "task": "Apply to 10 more companies — follow up on previous applications", "tag": "career", "diff": "medium"}, {"day": 172, "month": 6, "week": 24, "task": "Full mock interview with peer — record yourself, review playback", "tag": "interview", "diff": "hard"}, {"day": 173, "month": 6, "week": 24, "task": "Revise: OS fundamentals — processes, memory, deadlocks in 1 hour", "tag": "revision", "diff": "medium"}, {"day": 174, "month": 6, "week": 24, "task": "Revise: Networks — OSI, TCP, DNS, HTTP in 1 hour", "tag": "revision", "diff": "medium"}, {"day": 175, "month": 6, "week": 24, "task": "Revise: DB internals — B-Trees, ACID, MVCC, CAP in 1 hour", "tag": "revision", "diff": "medium"}, {"day": 176, "month": 6, "week": 24, "task": "DSA: Final 5 problems — dynamic programming", "tag": "dsa", "diff": "hard"}, {"day": 177, "month": 6, "week": 24, "task": "System Design: Design Distributed Key-Value Store", "tag": "sysdesign", "diff": "hard"}, {"day": 178, "month": 6, "week": 24, "task": "Career: Negotiate — research salary ranges on Levels.fyi + Glassdoor", "tag": "career", "diff": "medium"}, {"day": 179, "month": 6, "week": 25, "task": "Final review: Run through all 180 days — identify and close any gaps", "tag": "revision", "diff": "medium"}, {"day": 180, "month": 6, "week": 25, "task": "Day 180: You're ready. Review interview checklist. Trust your prep. 🎯", "tag": "final", "diff": "easy"}];
+
+let dpFilter = 'all';
+let dpSearch = '';
+let dpViewMonth = 0;
+
+function getDailyDone() {
+  return JSON.parse(localStorage.getItem('pp_daily_done') || '{}');
+}
+
+function toggleDailyDone(day) {
+  const done = getDailyDone();
+  done[day] = !done[day];
+  localStorage.setItem('pp_daily_done', JSON.stringify(done));
+  const today = new Date().toISOString().split('T')[0];
+  logStudyDay(today, 'daily');
+  renderDaily();
+}
+
+function getTodayDayNum() {
+  const startDate = new Date('2025-03-21');
+  const today = new Date();
+  const diff = Math.floor((today - startDate) / 86400000) + 1;
+  return Math.max(1, Math.min(180, diff));
+}
+
+const TAG_COLORS = {
+  python:    {bg:'rgba(74,184,255,.12)',  color:'#9ddeff', label:'Python'},
+  math:      {bg:'rgba(139,124,240,.12)', color:'#c4b8ff', label:'Math'},
+  sql:       {bg:'rgba(47,212,168,.12)',  color:'#7fffd4', label:'SQL'},
+  dsa:       {bg:'rgba(74,184,255,.12)',  color:'#9ddeff', label:'DSA'},
+  ml:        {bg:'rgba(139,124,240,.12)', color:'#c4b8ff', label:'ML'},
+  dl:        {bg:'rgba(139,124,240,.18)', color:'#c4b8ff', label:'Deep Learning'},
+  os:        {bg:'rgba(255,140,75,.12)',  color:'#ffb88a', label:'OS'},
+  networks:  {bg:'rgba(255,208,64,.12)',  color:'#ffd040', label:'Networks'},
+  db:        {bg:'rgba(47,212,168,.12)',  color:'#7fffd4', label:'Database'},
+  mlops:     {bg:'rgba(240,90,150,.12)',  color:'#ff9ec8', label:'MLOps'},
+  dataeng:   {bg:'rgba(47,212,168,.18)',  color:'#7fffd4', label:'Data Eng'},
+  sysdesign: {bg:'rgba(255,140,75,.15)',  color:'#ffb88a', label:'System Design'},
+  genai:     {bg:'rgba(139,124,240,.2)',  color:'#c4b8ff', label:'GenAI'},
+  project:   {bg:'rgba(34,221,120,.12)',  color:'#22dd78', label:'Project'},
+  interview: {bg:'rgba(255,79,79,.12)',   color:'#ff4f4f', label:'Interview'},
+  behavioural:{bg:'rgba(240,90,150,.12)', color:'#ff9ec8', label:'Behavioural'},
+  career:    {bg:'rgba(255,208,64,.12)',  color:'#ffd040', label:'Career'},
+  revision:  {bg:'rgba(88,88,100,.2)',    color:'#7270a0', label:'Revision'},
+  cs_arch:   {bg:'rgba(255,140,75,.12)',  color:'#ffb88a', label:'CS Arch'},
+  final:     {bg:'rgba(34,221,120,.2)',   color:'#22dd78', label:'Final'},
+};
+
+const DIFF_CFG = {
+  easy:   {bg:'rgba(34,221,120,.1)',  color:'#22dd78', label:'easy'},
+  medium: {bg:'rgba(255,208,64,.1)', color:'#ffd040', label:'medium'},
+  hard:   {bg:'rgba(255,79,79,.1)',  color:'#ff4f4f', label:'hard'},
+};
+
+const MONTH_COLORS = ['','#c4b8ff','#c4b8ff','#7fffd4','#7fffd4','#ffb88a','#ff9ec8'];
+const MONTH_NAMES  = ['','Foundations','Classical ML + SQL + Networks',
+  'Deep Learning + DB Design','MLOps + Data Engineering',
+  'GenAI + Projects + Advanced CS','Mock Interviews + Applications'];
+
+function updateDailyStats() {
+  const done = getDailyDone();
+  const todayNum = getTodayDayNum();
+  const totalDone = Object.values(done).filter(Boolean).length;
+  const overdue = DAILY_TARGETS.filter(d => d.day < todayNum && !done[d.day]).length;
+  const pct = Math.round(totalDone / 180 * 100);
+  const el = document.getElementById('dp-stats');
+  if (!el) return;
+  el.innerHTML =
+    '<div class="stat-card"><div class="stat-v" style="color:var(--ok);">' + totalDone + '</div><div class="stat-l">Days Done</div></div>' +
+    '<div class="stat-card"><div class="stat-v" style="color:var(--ml);">Day ' + todayNum + '</div><div class="stat-l">Today</div></div>' +
+    '<div class="stat-card"><div class="stat-v" style="color:var(--warn);">' + (180 - totalDone) + '</div><div class="stat-l">Remaining</div></div>' +
+    '<div class="stat-card"><div class="stat-v" style="color:' + (overdue > 0 ? 'var(--err)' : 'var(--ok)') + ';">' + overdue + '</div><div class="stat-l">Overdue</div></div>';
+  const bar = document.getElementById('dp-bar');
+  if (bar) bar.style.width = pct + '%';
+  const pctEl = document.getElementById('dp-pct');
+  if (pctEl) pctEl.textContent = pct + '%';
+}
+
+function renderDaily() {
+  const cont = document.getElementById('daily-content');
+  if (!cont) return;
+  const done = getDailyDone();
+  const todayNum = getTodayDayNum();
+
+  let filtered = DAILY_TARGETS;
+  if (dpSearch.trim()) {
+    const s = dpSearch.toLowerCase();
+    filtered = filtered.filter(function(d) { return d.task.toLowerCase().includes(s) || d.tag.toLowerCase().includes(s); });
+  }
+  if (dpFilter === 'pending') filtered = filtered.filter(function(d) { return !done[d.day]; });
+  if (dpFilter === 'done')    filtered = filtered.filter(function(d) { return !!done[d.day]; });
+  if (dpFilter === 'today')   filtered = filtered.filter(function(d) { return d.day === todayNum; });
+  if (dpFilter === 'overdue') filtered = filtered.filter(function(d) { return d.day < todayNum && !done[d.day]; });
+  if (dpViewMonth > 0)        filtered = filtered.filter(function(d) { return d.month === dpViewMonth; });
+
+  // Group by week
+  const byWeek = {};
+  filtered.forEach(function(d) {
+    if (!byWeek[d.week]) byWeek[d.week] = [];
+    byWeek[d.week].push(d);
+  });
+
+  let html = '';
+  const weeks = Object.keys(byWeek).sort(function(a,b){return parseInt(a)-parseInt(b);});
+  weeks.forEach(function(week) {
+    const wdays = byWeek[week];
+    const wNum = parseInt(week);
+    const month = wdays[0].month;
+    const wDone = wdays.filter(function(d){return done[d.day];}).length;
+    const wTotal = wdays.length;
+    html += '<div class="week-header">' +
+      '<span style="color:' + MONTH_COLORS[month] + ';">Week ' + wNum +
+      ' &nbsp;<span style="color:var(--hint);font-weight:400;font-size:10px;">Month ' + month + ' — ' + MONTH_NAMES[month] + '</span></span>' +
+      '<span style="font-family:var(--fm);font-size:10px;color:' + (wDone===wTotal?'var(--ok)':'var(--muted)') + ';">' + wDone + '/' + wTotal + ' done</span>' +
+      '</div>';
+
+    wdays.forEach(function(d) {
+      const isDone = !!done[d.day];
+      const isToday = d.day === todayNum;
+      const isOverdue = d.day < todayNum && !isDone;
+      const tagCfg = TAG_COLORS[d.tag] || TAG_COLORS.revision;
+      const diffCfg = DIFF_CFG[d.diff];
+      html += '<div class="day-card ' + (isDone?'done':'') + ' ' + (isToday?'today':'') + '" onclick="toggleDailyDone(' + d.day + ')">' +
+        '<div class="dc-check">' + (isDone ? '&#10003;' : '') + '</div>' +
+        '<div class="dc-body">' +
+          '<div class="dc-task">' + d.task + '</div>' +
+          '<div class="dc-meta">' +
+            '<span style="font-family:var(--fm);font-size:10px;color:' + (isToday?'var(--ml2)':isOverdue?'var(--err)':'var(--hint)') + ';">Day ' + d.day + '</span>' +
+            '<span style="padding:2px 7px;border-radius:2px;font-size:9px;font-family:var(--fh);font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:' + tagCfg.bg + ';color:' + tagCfg.color + ';">' + tagCfg.label + '</span>' +
+            '<span style="padding:2px 7px;border-radius:2px;font-size:9px;font-family:var(--fh);font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:' + diffCfg.bg + ';color:' + diffCfg.color + ';">' + diffCfg.label + '</span>' +
+            (isToday ? '<span class="dc-today-badge">TODAY</span>' : '') +
+            (isOverdue ? '<span style="font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;background:rgba(255,79,79,.12);color:var(--err);">OVERDUE</span>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    });
+  });
+
+  var filterVals = [['all','All 180'],['today','Today'],['overdue','Overdue'],['pending','Pending'],['done','Done']];
+  var filterBtns = filterVals.map(function(f){
+    var cls = 'dp-filter-btn' + (dpFilter===f[0]?' active':'');
+    return '<button class="' + cls + '" onclick="dpFilter=\"' + f[0] + '\";renderDaily()">' + f[1] + '</button>';
+  }).join('');
+
+  const monthBtns = [0,1,2,3,4,5,6].map(function(m){
+    var cls = 'dp-filter-btn' + (dpViewMonth===m?' active':'');
+    return '<button class="' + cls + '" onclick="dpViewMonth=' + m + ';renderDaily()">' + (m===0?'All':'M'+m) + '</button>';
+  }).join('');
+
+  cont.innerHTML =
+    '<div class="dp-stats-row" id="dp-stats"></div>' +
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">' +
+      '<div style="flex:1;height:5px;background:var(--s3);border-radius:2px;overflow:hidden;">' +
+        '<div id="dp-bar" style="height:100%;background:linear-gradient(90deg,var(--ml),var(--db));border-radius:2px;transition:width .4s;width:0%;"></div>' +
+      '</div>' +
+      '<span id="dp-pct" style="font-family:var(--fm);font-size:11px;color:var(--muted);min-width:36px;">0%</span>' +
+    '</div>' +
+    '<input class="dp-search" placeholder="Search tasks... (e.g. transformer, SQL, LeetCode)" value="' + dpSearch + '" oninput="dpSearch=this.value;renderDaily()" />' +
+    '<div class="dp-filters">' + filterBtns + '<span style="width:1px;background:var(--b2);margin:0 4px;"></span>' + monthBtns + '</div>' +
+    (filtered.length === 0
+      ? '<div class="card" style="text-align:center;padding:32px;color:var(--muted);font-family:var(--fh);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">No tasks match</div>'
+      : html) +
+    '<div style="text-align:center;margin-top:20px;padding-bottom:20px;">' +
+      '<button class="btn" onclick="scrollToToday()" style="font-size:12px;">Jump to Today (Day ' + todayNum + ')</button>' +
+    '</div>';
+
+  updateDailyStats();
+}
+
+function scrollToToday() {
+  dpFilter = 'all'; dpViewMonth = 0; dpSearch = '';
+  renderDaily();
+  setTimeout(function() {
+    var cards = document.querySelectorAll('.day-card.today');
+    if (cards.length) cards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 120);
+}
 
 </script>
 </body>
